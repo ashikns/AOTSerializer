@@ -1,0 +1,6 @@
+[submodule "submodules/MessagePack-CSharp"]
+	path = submodules/MessagePack-CSharp
+	url = https://github.com/neuecc/MessagePack-CSharp.git
+[submodule "submodules/Utf8Json"]
+	path = submodules/Utf8Json
+	url = https://github.com/neuecc/Utf8Json.git
