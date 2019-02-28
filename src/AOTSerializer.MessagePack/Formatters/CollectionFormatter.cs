@@ -14,33 +14,30 @@ namespace AOTSerializer.MessagePack.Formatters
 {
     public sealed class ArrayFormatter<T> : FormatterBase<T[]>
     {
-        public override int Serialize(ref byte[] bytes, int offset, T[] value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, T[] value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = resolver.GetFormatter<T>();
 
                 offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
 
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, value[i], resolver);
+                    formatter.Serialize(ref bytes, ref offset, value[i], resolver);
                 }
-
-                return offset - startOffset;
             }
         }
 
-        public override T[] Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override T[] Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
             else
@@ -48,15 +45,14 @@ namespace AOTSerializer.MessagePack.Formatters
                 var startOffset = offset;
                 var formatter = resolver.GetFormatter<T>();
 
-                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 offset += readSize;
                 var array = new T[len];
                 for (int i = 0; i < array.Length; i++)
                 {
-                    array[i] = formatter.Deserialize(bytes, offset, out readSize, resolver);
+                    array[i] = formatter.Deserialize(bytes, ref offset, resolver);
                     offset += readSize;
                 }
-                readSize = offset - startOffset;
                 return array;
             }
         }
@@ -71,29 +67,30 @@ namespace AOTSerializer.MessagePack.Formatters
 
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, ArraySegment<byte> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, ArraySegment<byte> value, IResolver resolver)
         {
             if (value.Array == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                return MessagePackBinary.WriteBytes(ref bytes, offset, value.Array, value.Offset, value.Count);
+                offset += MessagePackBinary.WriteBytes(ref bytes, offset, value.Array, value.Offset, value.Count);
             }
         }
 
-        public override ArraySegment<byte> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override ArraySegment<byte> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return default(ArraySegment<byte>);
             }
             else
             {
                 // use ReadBytesSegment? But currently straem api uses memory pool so can't save arraysegment...
-                var binary = MessagePackBinary.ReadBytes(bytes, offset, out readSize);
+                var binary = MessagePackBinary.ReadBytes(bytes, offset, out var readSize);
+                offset += readSize;
                 return new ArraySegment<byte>(binary, 0, binary.Length);
             }
         }
@@ -101,15 +98,14 @@ namespace AOTSerializer.MessagePack.Formatters
 
     public sealed class ArraySegmentFormatter<T> : FormatterBase<ArraySegment<T>>
     {
-        public override int Serialize(ref byte[] bytes, int offset, ArraySegment<T> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, ArraySegment<T> value, IResolver resolver)
         {
             if (value.Array == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = resolver.GetFormatter<T>();
 
                 offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
@@ -118,23 +114,21 @@ namespace AOTSerializer.MessagePack.Formatters
                 for (int i = 0; i < value.Count; i++)
                 {
                     var item = array[value.Offset + i];
-                    offset += formatter.Serialize(ref bytes, offset, item, resolver);
+                    formatter.Serialize(ref bytes, ref offset, item, resolver);
                 }
-
-                return offset - startOffset;
             }
         }
 
-        public override ArraySegment<T> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override ArraySegment<T> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return default(ArraySegment<T>);
             }
             else
             {
-                var array = resolver.GetFormatter<T[]>().Deserialize(bytes, offset, out readSize, resolver);
+                var array = resolver.GetFormatter<T[]>().Deserialize(bytes, ref offset, resolver);
                 return new ArraySegment<T>(array, 0, array.Length);
             }
         }
@@ -143,15 +137,14 @@ namespace AOTSerializer.MessagePack.Formatters
     // List<T> is popular format, should avoid abstraction.
     public sealed class ListFormatter<T> : FormatterBase<List<T>>
     {
-        public override int Serialize(ref byte[] bytes, int offset, List<T> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, List<T> value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = resolver.GetFormatter<T>();
 
                 var c = value.Count;
@@ -159,34 +152,29 @@ namespace AOTSerializer.MessagePack.Formatters
 
                 for (int i = 0; i < c; i++)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, value[i], resolver);
+                    formatter.Serialize(ref bytes, ref offset, value[i], resolver);
                 }
-
-                return offset - startOffset;
             }
         }
 
-        public override List<T> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override List<T> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
             else
             {
-                var startOffset = offset;
                 var formatter = resolver.GetFormatter<T>();
 
-                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 offset += readSize;
                 var list = new List<T>(len);
                 for (int i = 0; i < len; i++)
                 {
-                    list.Add(formatter.Deserialize(bytes, offset, out readSize, resolver));
-                    offset += readSize;
+                    list.Add(formatter.Deserialize(bytes, ref offset, resolver));
                 }
-                readSize = offset - startOffset;
                 return list;
             }
         }
@@ -196,11 +184,11 @@ namespace AOTSerializer.MessagePack.Formatters
         where TCollection : IEnumerable<TElement>
         where TEnumerator : IEnumerator<TElement>
     {
-        public override int Serialize(ref byte[] bytes, int offset, TCollection value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, TCollection value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
@@ -208,21 +196,19 @@ namespace AOTSerializer.MessagePack.Formatters
                 var array = value as TElement[];
                 if (array != null)
                 {
-                    var startOffset = offset;
                     var formatter = resolver.GetFormatter<TElement>();
 
                     offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, array.Length);
 
                     foreach (var item in array)
                     {
-                        offset += formatter.Serialize(ref bytes, offset, item, resolver);
+                        formatter.Serialize(ref bytes, ref offset, item, resolver);
                     }
 
-                    return offset - startOffset;
+                    return;
                 }
                 else
                 {
-                    var startOffset = offset;
                     var formatter = resolver.GetFormatter<TElement>();
 
                     // knows count or not.
@@ -237,7 +223,7 @@ namespace AOTSerializer.MessagePack.Formatters
                         {
                             while (e.MoveNext())
                             {
-                                offset += formatter.Serialize(ref bytes, offset, e.Current, resolver);
+                                formatter.Serialize(ref bytes, ref offset, e.Current, resolver);
                             }
                         }
                         finally
@@ -245,15 +231,13 @@ namespace AOTSerializer.MessagePack.Formatters
                             e.Dispose();
                         }
 
-                        return offset - startOffset;
+                        return;
                     }
                     else
                     {
                         // write message first -> open header space -> write header
-                        var writeStarOffset = offset;
-
+                        var writeStartOffset = offset;
                         var count = 0;
-                        var moveCount = 0;
 
                         // count = 16 <= 65535, header len is "3" so choose default space.
                         offset += 3;
@@ -264,9 +248,7 @@ namespace AOTSerializer.MessagePack.Formatters
                             while (e.MoveNext())
                             {
                                 count++;
-                                var writeSize = formatter.Serialize(ref bytes, offset, e.Current, resolver);
-                                moveCount += writeSize;
-                                offset += writeSize;
+                                formatter.Serialize(ref bytes, ref offset, e.Current, resolver);
                             }
                         }
                         finally
@@ -277,25 +259,24 @@ namespace AOTSerializer.MessagePack.Formatters
                         var headerLength = MessagePackBinary.GetArrayHeaderLength(count);
                         if (headerLength != 3)
                         {
+                            BinaryUtil.EnsureCapacity(ref bytes, offset, headerLength - 3);
+                            Buffer.BlockCopy(bytes, writeStartOffset + 3, bytes, writeStartOffset + headerLength, offset - writeStartOffset - 3);
+
                             if (headerLength == 1) offset -= 2; // 1
                             else offset += 2; // 5
-
-                            BinaryUtil.EnsureCapacity(ref bytes, offset, headerLength);
-                            Buffer.BlockCopy(bytes, writeStarOffset + 3, bytes, writeStarOffset + headerLength, moveCount);
                         }
-                        MessagePackBinary.WriteArrayHeader(ref bytes, writeStarOffset, count);
-
-                        return offset - startOffset;
+                        MessagePackBinary.WriteArrayHeader(ref bytes, writeStartOffset, count);
+                        return;
                     }
                 }
             }
         }
 
-        public override TCollection Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override TCollection Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return default(TCollection);
             }
             else
@@ -303,17 +284,14 @@ namespace AOTSerializer.MessagePack.Formatters
                 var startOffset = offset;
                 var formatter = resolver.GetFormatter<TElement>();
 
-                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 offset += readSize;
 
                 var list = Create(len);
                 for (int i = 0; i < len; i++)
                 {
-                    Add(list, i, formatter.Deserialize(bytes, offset, out readSize, resolver));
-                    offset += readSize;
+                    Add(list, i, formatter.Deserialize(bytes, ref offset, resolver));
                 }
-                readSize = offset - startOffset;
-
                 return Complete(list);
             }
         }
@@ -563,44 +541,36 @@ namespace AOTSerializer.MessagePack.Formatters
     // [Key, [Array]]
     public sealed class InterfaceGroupingFormatter<TKey, TElement> : FormatterBase<IGrouping<TKey, TElement>>
     {
-        public override int Serialize(ref byte[] bytes, int offset, IGrouping<TKey, TElement> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, IGrouping<TKey, TElement> value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                var startOffset = offset;
                 offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 2);
-                offset += resolver.GetFormatter<TKey>().Serialize(ref bytes, offset, value.Key, resolver);
-                offset += resolver.GetFormatter<IEnumerable<TElement>>().Serialize(ref bytes, offset, value, resolver);
-                return offset - startOffset;
+                resolver.GetFormatter<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
+                resolver.GetFormatter<IEnumerable<TElement>>().Serialize(ref bytes, ref offset, value, resolver);
             }
         }
 
-        public override IGrouping<TKey, TElement> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override IGrouping<TKey, TElement> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
             else
             {
-                var startOffset = offset;
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 offset += readSize;
 
                 if (count != 2) throw new InvalidOperationException("Invalid Grouping format.");
 
-                var key = resolver.GetFormatter<TKey>().Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
-
-                var value = resolver.GetFormatter<IEnumerable<TElement>>().Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
-
-                readSize = offset - startOffset;
+                var key = resolver.GetFormatter<TKey>().Deserialize(bytes, ref offset, resolver);
+                var value = resolver.GetFormatter<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
                 return new Grouping<TKey, TElement>(key, value);
             }
         }
@@ -700,48 +670,41 @@ namespace AOTSerializer.MessagePack.Formatters
     public sealed class NonGenericListFormatter<T> : FormatterBase<T>
         where T : class, IList, new()
     {
-        public override int Serialize(ref byte[] bytes, int offset, T value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
-                return 1;
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
             offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
             foreach (var item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item, resolver);
+                formatter.Serialize(ref bytes, ref offset, item, resolver);
             }
-
-            return offset - startOffset;
         }
 
-        public override T Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override T Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return default(T);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
-            var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+            var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
             offset += readSize;
 
             var list = new T();
             for (int i = 0; i < count; i++)
             {
-                list.Add(formatter.Deserialize(bytes, offset, out readSize, resolver));
-                offset += readSize;
+                list.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
-            readSize = offset - startOffset;
             return list;
         }
     }
@@ -755,48 +718,41 @@ namespace AOTSerializer.MessagePack.Formatters
 
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, IList value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, IList value, IResolver resolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
-                return 1;
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
             offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
             foreach (var item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item, resolver);
+                formatter.Serialize(ref bytes, ref offset, item, resolver);
             }
-
-            return offset - startOffset;
         }
 
-        public override IList Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override IList Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return default(IList);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
-            var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+            var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
             offset += readSize;
 
             var list = new object[count];
             for (int i = 0; i < count; i++)
             {
-                list[i] = formatter.Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
+                list[i] = formatter.Deserialize(bytes, ref offset, resolver);
             }
 
-            readSize = offset - startOffset;
             return list;
         }
     }
@@ -804,52 +760,44 @@ namespace AOTSerializer.MessagePack.Formatters
     public sealed class NonGenericDictionaryFormatter<T> : FormatterBase<T>
         where T : class, IDictionary, new()
     {
-        public override int Serialize(ref byte[] bytes, int offset, T value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
-                return 1;
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
             offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, value.Count);
             foreach (DictionaryEntry item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item.Key, resolver);
-                offset += formatter.Serialize(ref bytes, offset, item.Value, resolver);
+                formatter.Serialize(ref bytes, ref offset, item.Key, resolver);
+                formatter.Serialize(ref bytes, ref offset, item.Value, resolver);
             }
-
-            return offset - startOffset;
         }
 
-        public override T Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override T Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
-            var count = MessagePackBinary.ReadMapHeader(bytes, offset, out readSize);
+            var count = MessagePackBinary.ReadMapHeader(bytes, offset, out var readSize);
             offset += readSize;
 
             var dict = new T();
             for (int i = 0; i < count; i++)
             {
-                var key = formatter.Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
-                var value = formatter.Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
+                var key = formatter.Deserialize(bytes, ref offset, resolver);
+                var value = formatter.Deserialize(bytes, ref offset, resolver);
                 dict.Add(key, value);
             }
 
-            readSize = offset - startOffset;
             return dict;
         }
     }
@@ -863,52 +811,44 @@ namespace AOTSerializer.MessagePack.Formatters
 
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, IDictionary value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, IDictionary value, IResolver resolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
-                return 1;
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
             offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, value.Count);
             foreach (DictionaryEntry item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item.Key, resolver);
-                offset += formatter.Serialize(ref bytes, offset, item.Value, resolver);
+                formatter.Serialize(ref bytes, ref offset, item.Key, resolver);
+                formatter.Serialize(ref bytes, ref offset, item.Value, resolver);
             }
-
-            return offset - startOffset;
         }
 
-        public override IDictionary Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override IDictionary Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
 
             var formatter = resolver.GetFormatter<object>();
-            var startOffset = offset;
 
-            var count = MessagePackBinary.ReadMapHeader(bytes, offset, out readSize);
+            var count = MessagePackBinary.ReadMapHeader(bytes, offset, out var readSize);
             offset += readSize;
 
             var dict = new Dictionary<object, object>(count);
             for (int i = 0; i < count; i++)
             {
-                var key = formatter.Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
-                var value = formatter.Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
+                var key = formatter.Deserialize(bytes, ref offset, resolver);
+                var value = formatter.Deserialize(bytes, ref offset, resolver);
                 dict.Add(key, value);
             }
 
-            readSize = offset - startOffset;
             return dict;
         }
     }

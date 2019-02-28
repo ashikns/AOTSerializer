@@ -10,7 +10,7 @@ namespace AOTSerializer.MessagePack
     /// Encode/Decode Utility of MessagePack Spec.
     /// https://github.com/msgpack/msgpack/blob/master/spec.md
     /// </summary>
-    public static partial class MessagePackBinary
+    internal static partial class MessagePackBinary
     {
         const int MaxSize = 256; // [0] ~ [255]
 
@@ -1989,7 +1989,7 @@ namespace AOTSerializer.MessagePack
     }
 
     // Stream Overload
-    public static partial class MessagePackBinary
+    internal static partial class MessagePackBinary
     {
         static class StreamDecodeMemoryPool
         {

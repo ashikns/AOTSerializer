@@ -36,14 +36,16 @@ namespace AOTSerializer.MessagePack.Formatters
         {
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, <#= t.Name #> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #> value, IResolver resolver)
         {
-            return MessagePackBinary.Write<#= t.Name #>(ref bytes, offset, value);
+            offset += MessagePackBinary.Write<#= t.Name #>(ref bytes, offset, value);
         }
 
-        public override <#= t.Name #> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override <#= t.Name #> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
-            return MessagePackBinary.Read<#= t.Name #>(bytes, offset, out readSize);
+            var result = MessagePackBinary.Read<#= t.Name #>(bytes, offset, out var readSize);
+			offset += readSize;
+			return result;
         }
     }
 
@@ -55,28 +57,30 @@ namespace AOTSerializer.MessagePack.Formatters
         {
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, <#= t.Name #>? value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #>? value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                return MessagePackBinary.Write<#= t.Name #>(ref bytes, offset, value.Value);
+                offset += MessagePackBinary.Write<#= t.Name #>(ref bytes, offset, value.Value);
             }
         }
 
-        public override <#= t.Name #>? Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override <#= t.Name #>? Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
             else
             {
-                return MessagePackBinary.Read<#= t.Name #>(bytes, offset, out readSize);
+                var result = MessagePackBinary.Read<#= t.Name #>(bytes, offset, out var readSize);
+				offset += readSize;
+				return result;
             }
         }
     }
@@ -91,37 +95,32 @@ namespace AOTSerializer.MessagePack.Formatters
 
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, <#= t.Name #>[] value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #>[] value, IResolver resolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                offset += MessagePackBinary.WriteNil(ref bytes, offset);
             }
             else
             {
-                var startOffset = offset;
                 offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
                     offset += MessagePackBinary.Write<#= t.Name #>(ref bytes, offset, value[i]);
                 }
-
-                return offset - startOffset;
             }
         }
 
-        public override <#= t.Name #>[] Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override <#= t.Name #>[] Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
-                readSize = 1;
+                offset += 1;
                 return null;
             }
             else
             {
-                var startOffset = offset;
-
-                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var len = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 offset += readSize;
                 var array = new <#= t.Name #>[len];
                 for (int i = 0; i < array.Length; i++)
@@ -129,7 +128,6 @@ namespace AOTSerializer.MessagePack.Formatters
                     array[i] = MessagePackBinary.Read<#= t.Name #>(bytes, offset, out readSize);
                     offset += readSize;
                 }
-                readSize = offset - startOffset;
                 return array;
             }
         }

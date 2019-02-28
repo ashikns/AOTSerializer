@@ -4,37 +4,37 @@ namespace AOTSerializer.Common
 {
     public interface IFormatter
     {
-        int SerializeNonGeneric(ref byte[] bytes, int offset, object value, IResolver resolver);
-        object DeserializeNonGeneric(byte[] bytes, int offset, Type type, out int readSize, IResolver resolver);
+        void SerializeNonGeneric(ref byte[] bytes, ref int offset, object value, IResolver resolver);
+        object DeserializeNonGeneric(byte[] bytes, ref int offset, Type type, IResolver resolver);
     }
 
     public interface IFormatter<T> : IFormatter
     {
-        int Serialize(ref byte[] bytes, int offset, T value, IResolver resolver);
-        T Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver);
+        void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver);
+        T Deserialize(byte[] bytes, ref int offset, IResolver resolver);
     }
 
     public abstract class FormatterBase<T> : IFormatter<T>
     {
-        public int SerializeNonGeneric(ref byte[] bytes, int offset, object value, IResolver resolver)
+        public void SerializeNonGeneric(ref byte[] bytes, ref int offset, object value, IResolver resolver)
         {
             if (!(value is T))
             {
                 throw new Exception($"{nameof(value)} should be of type {typeof(T)}");
             }
-            return Serialize(ref bytes, offset, (T)value, resolver);
+            Serialize(ref bytes, ref offset, (T)value, resolver);
         }
 
-        public object DeserializeNonGeneric(byte[] bytes, int offset, Type type, out int readSize, IResolver resolver)
+        public object DeserializeNonGeneric(byte[] bytes, ref int offset, Type type, IResolver resolver)
         {
             if (type != typeof(T))
             {
                 throw new Exception($"{nameof(type)} should be of type {typeof(T)}");
             }
-            return Deserialize(bytes, offset, out readSize, resolver);
+            return Deserialize(bytes, ref offset, resolver);
         }
 
-        public abstract int Serialize(ref byte[] bytes, int offset, T value, IResolver resolver);
-        public abstract T Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver);
+        public abstract void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver);
+        public abstract T Deserialize(byte[] bytes, ref int offset, IResolver resolver);
     }
 }

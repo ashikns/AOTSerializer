@@ -19,19 +19,16 @@ namespace AOTSerializer.MessagePack.Formatters
 
     public sealed class ValueTupleFormatter<<#= ts #>> : FormatterBase<<#= t #>><#= (t.Contains("TRest") ? " where TRest : struct" : "") #>
     {
-        public override int Serialize(ref byte[] bytes, int offset, <#= t #> value, IResolver resolver)
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t #> value, IResolver resolver)
         {
-            var startOffset = offset;
             offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, <#= i #>);
 
 <# for(var j = 1; j <= i; j++) { #>
-            offset += resolver.GetFormatter<<#= toT(j) #>>().Serialize(ref bytes, offset, value.<#= toItem(j) #>, resolver);
+            resolver.GetFormatter<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
 <# } #>
-
-            return offset - startOffset;
         }
 
-        public override <#= t #> Deserialize(byte[] bytes, int offset, out int readSize, IResolver resolver)
+        public override <#= t #> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
             if (MessagePackBinary.IsNil(bytes, offset))
             {
@@ -39,17 +36,14 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var startOffset = offset;
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
                 if (count != <#= i #>) throw new InvalidOperationException("Invalid ValueTuple count");
                 offset += readSize;
 
 <# for(var j = 1; j <= i; j++) { #>
-                var item<#= j #> = resolver.GetFormatter<<#= toT(j) #>>().Deserialize(bytes, offset, out readSize, resolver);
-                offset += readSize;
+                var item<#= j #> = resolver.GetFormatter<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
 <# } #>
             
-                readSize = offset - startOffset;
                 return new ValueTuple<<#= ts #>>(<#= string.Join(", ", Enumerable.Range(1, i).Select(x => "item" + x)) #>);
             }
         }
