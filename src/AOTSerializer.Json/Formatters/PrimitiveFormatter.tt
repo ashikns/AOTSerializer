@@ -1,0 +1,162 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var types = new[]
+    {
+        typeof(Int16),
+        typeof(Int32),
+        typeof(Int64),
+        typeof(UInt16),
+        typeof(UInt32),
+        typeof(UInt64),
+        typeof(Single),
+        typeof(Double),
+        typeof(bool), 
+        typeof(byte), 
+        typeof(sbyte),
+    };
+#>
+using AOTSerializer.Common;
+using AOTSerializer.Json.Internal;
+using System;
+
+namespace AOTSerializer.Json.Formatters
+{
+<# foreach(var t in types) {  #>
+    public sealed class <#= t.Name #>Formatter : FormatterBase<<#= t.Name #>>, IObjectPropertyNameFormatter<<#= t.Name #>>
+    {
+        public static readonly <#= t.Name #>Formatter Default = new <#= t.Name #>Formatter();
+
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #> value, IResolver resolver)
+        {
+            JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value);
+        }
+
+        public override <#= t.Name #> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            return JsonUtility.Read<#= t.Name #>(bytes, ref offset);
+        }
+
+        public void SerializeToPropertyName(ref byte[] bytes, ref int offset, <#= t.Name #> value, IResolver resolver)
+        {
+            JsonUtility.WriteQuotation(ref bytes, ref offset);
+            JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value);
+            JsonUtility.WriteQuotation(ref bytes, ref offset);
+        }
+
+        public <#= t.Name #> DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
+            return NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out _);
+        }
+    }
+
+    public sealed class Nullable<#= t.Name #>Formatter : FormatterBase<<#= t.Name #>?>, IObjectPropertyNameFormatter<<#= t.Name #>?>
+    {
+        public static readonly Nullable<#= t.Name #>Formatter Default = new Nullable<#= t.Name #>Formatter();
+
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #>? value, IResolver resolver)
+        {
+            if (value == null)
+            {
+                JsonUtility.WriteNull(ref bytes, ref offset);
+            }
+            else
+            {
+                JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value.Value);
+            }
+        }
+
+        public override <#= t.Name #>? Deserialize(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            if (JsonUtility.ReadIsNull(bytes, ref offset))
+            {
+                return null;
+            }
+            else
+            {
+                return JsonUtility.Read<#= t.Name #>(bytes, ref offset);
+            }
+        }
+
+        public void SerializeToPropertyName(ref byte[] bytes, ref int offset, <#= t.Name #>? value, IResolver resolver)
+        {
+            if (value == null)
+            {
+                JsonUtility.WriteNull(ref bytes, ref offset);
+                return;
+            }
+
+            JsonUtility.WriteQuotation(ref bytes, ref offset);
+            JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value.Value);
+            JsonUtility.WriteQuotation(ref bytes, ref offset);
+        }
+
+        public <#= t.Name #>? DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
+
+            var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
+            return NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out _);
+        }
+    }
+
+<# if(t.Name != "Byte") { #>
+    public sealed class <#= t.Name #>ArrayFormatter : FormatterBase<<#= t.Name #>[]>
+    {
+        public static readonly <#= t.Name #>ArrayFormatter Default = new <#= t.Name #>ArrayFormatter();
+
+        public override void Serialize(ref byte[] bytes, ref int offset, <#= t.Name #>[] value, IResolver resolver)
+        {
+            if (value == null)
+            {
+                JsonUtility.WriteNull(ref bytes, ref offset);
+                return;
+            }
+
+            JsonUtility.WriteBeginArray(ref bytes, ref offset);
+
+            if (value.Length != 0)
+            {
+                JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value[0]);
+            }
+            for (int i = 1; i < value.Length; i++)
+            {
+                JsonUtility.WriteValueSeparator(ref bytes, ref offset);
+                JsonUtility.Write<#= t.Name #>(ref bytes, ref offset, value[i]);
+            }
+
+            JsonUtility.WriteEndArray(ref bytes, ref offset);
+        }
+
+        public override <#= t.Name #>[] Deserialize(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            if (JsonUtility.ReadIsNull(bytes, ref offset))
+            {
+                return null;
+            }
+
+            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
+            var segmentOffset = segment.Offset;
+
+            var result = new <#= t.Name #>[numElements];
+            int index = 0;
+
+            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
+            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            {
+                result[index++] = JsonUtility.Read<#= t.Name #>(bytes, ref offset);
+                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+            }
+
+            return result;
+        }
+    }
+<# } #>
+
+<# } #>
+}
