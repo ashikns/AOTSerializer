@@ -290,7 +290,7 @@ namespace AOTSerializer.Internal
         }
 
         // 4(x2) - 2(x2) - 2(x2) - 2(x2) - 6(x2)
-        public void Write(byte[] buffer, int offset)
+        public void Write(byte[] buffer, ref int offset)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -367,6 +367,8 @@ namespace AOTSerializer.Internal
             buffer[offset + 33] = byteToHexStringLow[Byte14];
             buffer[offset + 34] = byteToHexStringHigh[Byte15];
             buffer[offset + 35] = byteToHexStringLow[Byte15];
+
+            offset += 36;
         }
     }
 }

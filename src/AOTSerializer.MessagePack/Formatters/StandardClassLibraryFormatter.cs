@@ -194,10 +194,9 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             BinaryUtil.EnsureCapacity(ref bytes, offset, 38);
 
-            bytes[offset] = MessagePackCode.Str8;
-            bytes[offset + 1] = unchecked((byte)36);
-            new GuidBits(ref value).Write(bytes, offset + 2);
-            offset += 38;
+            bytes[offset++] = MessagePackCode.Str8;
+            bytes[offset++] = unchecked((byte)36);
+            new GuidBits(ref value).Write(bytes, ref offset);
         }
 
         public override Guid Deserialize(byte[] bytes, ref int offset, IResolver resolver)

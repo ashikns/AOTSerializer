@@ -232,8 +232,7 @@ namespace AOTSerializer.Json.Formatters
 
             JsonUtility.WriteRawUnsafe(ref bytes, ref offset, (byte)'\"');
 
-            new GuidBits(ref value).Write(bytes, offset); // len = 36
-            offset += 36;
+            new GuidBits(ref value).Write(bytes, ref offset); // len = 36
 
             JsonUtility.WriteRawUnsafe(ref bytes, ref offset, (byte)'\"');
         }
