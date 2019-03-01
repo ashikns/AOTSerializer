@@ -1,24 +1,19 @@
-﻿using System;
+﻿using AOTSerializer.Internal;
 using AOTSerializer.Json.Internal.DoubleConversion;
-using AOTSerializer.Internal;
-
-#if NETSTANDARD
+using System;
 using System.Runtime.CompilerServices;
-#endif
 
 namespace AOTSerializer.Json.Internal
 {
     /// <summary>
     /// zero-allocate itoa, dtoa, atoi, atod converters.
     /// </summary>
-    public static class NumberConverter
+    internal static class NumberConverter
     {
         /// <summary>
         /// 0 ~ 9
         /// </summary>
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool IsNumber(byte c)
         {
             return (byte)'0' <= c && c <= (byte)'9';
@@ -27,9 +22,7 @@ namespace AOTSerializer.Json.Internal
         /// <summary>
         /// Is 0 ~ 9, '.', '+', '-'?
         /// </summary>
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool IsNumberRepresentation(byte c)
         {
             switch (c)
@@ -55,30 +48,22 @@ namespace AOTSerializer.Json.Internal
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static sbyte ReadSByte(byte[] bytes, int offset, out int readCount)
         {
             return checked((sbyte)ReadInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static short ReadInt16(byte[] bytes, int offset, out int readCount)
         {
             return checked((short)ReadInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int ReadInt32(byte[] bytes, int offset, out int readCount)
         {
             return checked((int)ReadInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static long ReadInt64(byte[] bytes, int offset, out int readCount)
         {
             var value = 0L;
@@ -105,30 +90,22 @@ namespace AOTSerializer.Json.Internal
         END:
             return unchecked(value * sign);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static byte ReadByte(byte[] bytes, int offset, out int readCount)
         {
             return checked((byte)ReadUInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static ushort ReadUInt16(byte[] bytes, int offset, out int readCount)
         {
             return checked((ushort)ReadUInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static uint ReadUInt32(byte[] bytes, int offset, out int readCount)
         {
             return checked((uint)ReadUInt64(bytes, offset, out readCount));
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static ulong ReadUInt64(byte[] bytes, int offset, out int readCount)
         {
             var value = 0UL;
@@ -148,44 +125,32 @@ namespace AOTSerializer.Json.Internal
         END:
             return value;
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static float ReadSingle(byte[] bytes, int offset, out int readCount)
         {
             return StringToDoubleConverter.ToSingle(bytes, offset, out readCount);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static double ReadDouble(byte[] bytes, int offset, out int readCount)
         {
             return StringToDoubleConverter.ToDouble(bytes, offset, out readCount);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteByte(ref byte[] buffer, int offset, byte value)
         {
             return WriteUInt64(ref buffer, offset, (ulong)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteUInt16(ref byte[] buffer, int offset, ushort value)
         {
             return WriteUInt64(ref buffer, offset, (ulong)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteUInt32(ref byte[] buffer, int offset, uint value)
         {
             return WriteUInt64(ref buffer, offset, (ulong)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteUInt64(ref byte[] buffer, int offset, ulong value)
         {
             var startOffset = offset;
@@ -305,30 +270,22 @@ namespace AOTSerializer.Json.Internal
 
             return offset - startOffset;
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteSByte(ref byte[] buffer, int offset, sbyte value)
         {
             return WriteInt64(ref buffer, offset, (long)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteInt16(ref byte[] buffer, int offset, short value)
         {
             return WriteInt64(ref buffer, offset, (long)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteInt32(ref byte[] buffer, int offset, int value)
         {
             return WriteInt64(ref buffer, offset, (long)value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteInt64(ref byte[] buffer, int offset, long value)
         {
             var startOffset = offset;
@@ -483,16 +440,12 @@ namespace AOTSerializer.Json.Internal
 
             return offset - startOffset;
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteSingle(ref byte[] bytes, int offset, float value)
         {
             return DoubleToStringConverter.GetBytes(ref bytes, offset, value);
         }
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static int WriteDouble(ref byte[] bytes, int offset, double value)
         {
             return DoubleToStringConverter.GetBytes(ref bytes, offset, value);
@@ -500,9 +453,7 @@ namespace AOTSerializer.Json.Internal
 
         // boolean is not number:)
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static bool ReadBoolean(byte[] bytes, int offset, out int readCount)
         {
             if (bytes[offset] == 't')

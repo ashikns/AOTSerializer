@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace AOTSerializer.Internal
@@ -160,17 +161,13 @@ namespace AOTSerializer.Internal
             throw new ArgumentException("Invalid Guid Pattern.");
         }
 
-#if NETSTANDARD || NETFRAMEWORK
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte Parse(byte[] bytes, int highOffset)
         {
             return unchecked((byte)(SwitchParse(bytes[highOffset]) * 16 + SwitchParse(bytes[highOffset + 1])));
         }
 
-#if NETSTANDARD || NETFRAMEWORK
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte SwitchParse(byte b)
         {
             // '0'(48) ~ '9'(57) => -48

@@ -1,6 +1,4 @@
-﻿#if NETSTANDARD || NETFRAMEWORK
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 namespace AOTSerializer.Internal
@@ -56,7 +54,7 @@ namespace AOTSerializer.Internal
         public static unsafe void MemoryCopy(ref byte[] buffer, ref int offset, byte[] src)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, src.Length);
-#if !NET45
+#if TRUE
             fixed (void* dstP = &buffer[offset])
             fixed (void* srcP = &src[0])
             {
@@ -220,5 +218,3 @@ namespace AOTSerializer.Internal
         }
     }
 }
-
-#endif

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AOTSerializer.Internal
 {
@@ -6,9 +7,7 @@ namespace AOTSerializer.Internal
     {
         private const int ArrayMaxSize = 0x7FFFFFC7; // https://msdn.microsoft.com/en-us/library/system.array
 
-#if NETSTANDARD || NETFRAMEWORK
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void EnsureCapacity(ref byte[] bytes, int offset, int appendLength)
         {
             var newLength = offset + appendLength;
@@ -55,9 +54,7 @@ namespace AOTSerializer.Internal
         }
 
         // Buffer.BlockCopy version of Array.Resize
-#if NETSTANDARD || NETFRAMEWORK
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FastResize(ref byte[] array, int newSize)
         {
             if (newSize < 0) throw new ArgumentOutOfRangeException("newSize");
@@ -77,9 +74,7 @@ namespace AOTSerializer.Internal
             }
         }
 
-#if NETSTANDARD || NETFRAMEWORK
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] FastCloneWithResize(byte[] array, int newSize)
         {
             if (newSize < 0) throw new ArgumentOutOfRangeException("newSize");

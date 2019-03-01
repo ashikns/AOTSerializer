@@ -1,6 +1,4 @@
-﻿#if NETSTANDARD || NETFRAMEWORK
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace AOTSerializer.Internal
 {
@@ -890,5 +888,3 @@ namespace AOTSerializer.Internal
 
     }
 }
-
-#endif

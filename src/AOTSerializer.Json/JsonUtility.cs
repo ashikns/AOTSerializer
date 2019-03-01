@@ -150,9 +150,7 @@ namespace AOTSerializer.Json
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void SkipBom(byte[] bytes, ref int offset)
         {
             if (bytes.Length >= 3)
@@ -164,9 +162,7 @@ namespace AOTSerializer.Json
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void SkipWhiteSpace(byte[] bytes, ref int offset)
         {
             // eliminate array bound check
@@ -680,70 +676,54 @@ namespace AOTSerializer.Json
             return new ArraySegment<byte>(buffer, 1, offset - 1); // without quotation
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteRaw(ref byte[] buffer, ref int offset, byte rawValue)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = rawValue;
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteRaw(ref byte[] buffer, ref int offset, byte[] rawValue)
         {
             UnsafeMemory.WriteRaw(ref buffer, ref offset, rawValue);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteRawUnsafe(ref byte[] buffer, ref int offset, byte rawValue)
         {
             buffer[offset++] = rawValue;
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteBeginArray(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = (byte)'[';
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteEndArray(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = (byte)']';
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteBeginObject(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = (byte)'{';
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteEndObject(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = (byte)'}';
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteValueSeparator(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
@@ -751,9 +731,7 @@ namespace AOTSerializer.Json
         }
 
         /// <summary>:</summary>
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteNameSeparator(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
@@ -761,27 +739,21 @@ namespace AOTSerializer.Json
         }
 
         /// <summary>WriteString + WriteNameSeparator</summary>
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WritePropertyName(ref byte[] buffer, ref int offset, string propertyName)
         {
             WriteString(ref buffer, ref offset, propertyName);
             WriteNameSeparator(ref buffer, ref offset);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteQuotation(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 1);
             buffer[offset++] = (byte)'\"';
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteNull(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 4);
@@ -792,9 +764,7 @@ namespace AOTSerializer.Json
             offset += 4;
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteBoolean(ref byte[] buffer, ref int offset, bool value)
         {
             if (value)
@@ -818,9 +788,7 @@ namespace AOTSerializer.Json
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteTrue(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 4);
@@ -831,9 +799,7 @@ namespace AOTSerializer.Json
             offset += 4;
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteFalse(ref byte[] buffer, ref int offset)
         {
             BinaryUtil.EnsureCapacity(ref buffer, offset, 5);
@@ -845,41 +811,31 @@ namespace AOTSerializer.Json
             offset += 5;
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteSingle(ref byte[] buffer, ref int offset, Single value)
         {
             offset += Internal.DoubleConversion.DoubleToStringConverter.GetBytes(ref buffer, offset, value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteDouble(ref byte[] buffer, ref int offset, double value)
         {
             offset += Internal.DoubleConversion.DoubleToStringConverter.GetBytes(ref buffer, offset, value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteByte(ref byte[] buffer, ref int offset, byte value)
         {
             WriteUInt64(ref buffer, ref offset, (ulong)value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteUInt16(ref byte[] buffer, ref int offset, ushort value)
         {
             WriteUInt64(ref buffer, ref offset, (ulong)value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteUInt32(ref byte[] buffer, ref int offset, uint value)
         {
             WriteUInt64(ref buffer, ref offset, (ulong)value);
@@ -890,25 +846,19 @@ namespace AOTSerializer.Json
             offset += NumberConverter.WriteUInt64(ref buffer, offset, value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteSByte(ref byte[] buffer, ref int offset, sbyte value)
         {
             WriteInt64(ref buffer, ref offset, (long)value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteInt16(ref byte[] buffer, ref int offset, short value)
         {
             WriteInt64(ref buffer, ref offset, (long)value);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static void WriteInt32(ref byte[] buffer, ref int offset, int value)
         {
             WriteInt64(ref buffer, ref offset, (long)value);
@@ -1211,9 +1161,7 @@ namespace AOTSerializer.Json
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void ReadNextCore(JsonToken token, byte[] bytes, ref int offset)
         {
             switch (token)
@@ -1303,17 +1251,13 @@ namespace AOTSerializer.Json
             }
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static int GetCodePoint(char a, char b, char c, char d)
         {
             return (((((ToNumber(a) * 16) + ToNumber(b)) * 16) + ToNumber(c)) * 16) + ToNumber(d);
         }
 
-#if NETSTANDARD
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static int ToNumber(char x)
         {
             if ('0' <= x && x <= '9')
