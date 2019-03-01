@@ -4,9 +4,8 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-#if NETSTANDARD
-using System;
 using AOTSerializer.Common;
+using System;
 
 namespace AOTSerializer.MessagePack.Formatters
 {
@@ -21,7 +20,7 @@ namespace AOTSerializer.MessagePack.Formatters
     {
         public override void Serialize(ref byte[] bytes, ref int offset, <#= t #> value, IResolver resolver)
         {
-            offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, <#= i #>);
+            MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, <#= i #>);
 
 <# for(var j = 1; j <= i; j++) { #>
             resolver.GetFormatter<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
@@ -36,14 +35,13 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != <#= i #>) throw new InvalidOperationException("Invalid ValueTuple count");
-                offset += readSize;
 
 <# for(var j = 1; j <= i; j++) { #>
                 var item<#= j #> = resolver.GetFormatter<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
 <# } #>
-            
+
                 return new ValueTuple<<#= ts #>>(<#= string.Join(", ", Enumerable.Range(1, i).Select(x => "item" + x)) #>);
             }
         }
@@ -51,4 +49,3 @@ namespace AOTSerializer.MessagePack.Formatters
 
 <# } #>
 }
-#endif

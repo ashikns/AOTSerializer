@@ -12,7 +12,7 @@ namespace AOTSerializer.MessagePack.Resolvers
     {
         public static readonly IResolver Instance = new BuiltinResolver();
 
-        BuiltinResolver()
+        private BuiltinResolver()
         {
 
         }
@@ -28,7 +28,7 @@ namespace AOTSerializer.MessagePack.Internal
 {
     internal static class BuiltinResolverGetFormatterHelper
     {
-        static readonly Dictionary<Type, IFormatter> formatterMap = new Dictionary<Type, IFormatter>()
+        private static readonly Dictionary<Type, IFormatter> formatterMap = new Dictionary<Type, IFormatter>()
         {
             // Primitive
             {typeof(Int16), Int16Formatter.Instance},

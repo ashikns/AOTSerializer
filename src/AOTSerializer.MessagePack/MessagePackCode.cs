@@ -66,8 +66,8 @@
         public const byte MinNegativeFixInt = 0xe0; // 224
         public const byte MaxNegativeFixInt = 0xff; // 255
 
-        static readonly MessagePackType[] typeLookupTable = new MessagePackType[256];
-        static readonly string[] formatNameTable = new string[256];
+        private static readonly MessagePackType[] typeLookupTable = new MessagePackType[256];
+        private static readonly string[] formatNameTable = new string[256];
 
         static MessagePackCode()
         {

@@ -9,7 +9,7 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
@@ -34,7 +34,7 @@ namespace AOTSerializer.MessagePack.Formatters
     public sealed class StaticNullableFormatter<T> : FormatterBase<T?>
         where T : struct
     {
-        readonly IFormatter<T> underlyingFormatter;
+        private readonly IFormatter<T> underlyingFormatter;
 
         public StaticNullableFormatter(IFormatter<T> underlyingFormatter)
         {
@@ -45,7 +45,7 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {

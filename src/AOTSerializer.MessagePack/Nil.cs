@@ -41,14 +41,12 @@ namespace AOTSerializer.MessagePack.Formatters
 
         public override void Serialize(ref byte[] bytes, ref int offset, Nil value, IResolver resolver)
         {
-            offset += MessagePackBinary.WriteNil(ref bytes, offset);
+            MessagePackBinary.WriteNil(ref bytes, ref offset);
         }
 
         public override Nil Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
-            var result = MessagePackBinary.ReadNil(bytes, offset, out var readSize);
-            offset += readSize;
-            return result;
+            return MessagePackBinary.ReadNil(bytes, ref offset);
         }
     }
 
@@ -63,13 +61,12 @@ namespace AOTSerializer.MessagePack.Formatters
 
         public override void Serialize(ref byte[] bytes, ref int offset, Nil? value, IResolver resolver)
         {
-            offset += MessagePackBinary.WriteNil(ref bytes, offset);
+            MessagePackBinary.WriteNil(ref bytes, ref offset);
         }
 
         public override Nil? Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
-            var result = MessagePackBinary.ReadNil(bytes, offset, out var readSize);
-            offset += readSize;
+            var result = MessagePackBinary.ReadNil(bytes, ref offset);
             return result;
         }
     }

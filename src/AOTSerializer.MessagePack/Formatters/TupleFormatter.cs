@@ -1,5 +1,5 @@
-﻿using System;
-using AOTSerializer.Common;
+﻿using AOTSerializer.Common;
+using System;
 
 namespace AOTSerializer.MessagePack.Formatters
 {
@@ -10,11 +10,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 1);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 1);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             }
@@ -29,12 +29,11 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 1) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1>(item1);
             }
         }
@@ -47,11 +46,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 2);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 2);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -67,13 +66,12 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 2) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2>(item1, item2);
             }
         }
@@ -86,11 +84,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 3);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 3);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -107,14 +105,13 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 3) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
                 var item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3>(item1, item2, item3);
             }
         }
@@ -127,11 +124,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 4);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 4);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -149,15 +146,14 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 4) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
                 var item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
                 var item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3, T4>(item1, item2, item3, item4);
             }
         }
@@ -170,11 +166,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 5);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 5);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -193,16 +189,15 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 5) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
                 var item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
                 var item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
                 var item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3, T4, T5>(item1, item2, item3, item4, item5);
             }
         }
@@ -215,11 +210,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 6);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 6);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -239,9 +234,8 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 6) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
@@ -249,7 +243,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 var item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
                 var item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
                 var item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3, T4, T5, T6>(item1, item2, item3, item4, item5, item6);
             }
         }
@@ -262,11 +256,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 7);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 7);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -287,9 +281,8 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 7) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
@@ -298,7 +291,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 var item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
                 var item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
                 var item7 = resolver.GetFormatter<T7>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3, T4, T5, T6, T7>(item1, item2, item3, item4, item5, item6, item7);
             }
         }
@@ -311,11 +304,11 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 8);
+                MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 8);
 
                 resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
                 resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
@@ -337,9 +330,8 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var count = MessagePackBinary.ReadArrayHeader(bytes, offset, out var readSize);
+                var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 if (count != 8) throw new InvalidOperationException("Invalid Tuple count");
-                offset += readSize;
 
                 var item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
                 var item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
@@ -349,7 +341,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 var item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
                 var item7 = resolver.GetFormatter<T7>().Deserialize(bytes, ref offset, resolver);
                 var item8 = resolver.GetFormatter<TRest>().Deserialize(bytes, ref offset, resolver);
-            
+
                 return new Tuple<T1, T2, T3, T4, T5, T6, T7, TRest>(item1, item2, item3, item4, item5, item6, item7, item8);
             }
         }

@@ -16,7 +16,7 @@ namespace MessagePack.Formatters
         {
             if (value == null)
             {
-                offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
             else
             {
@@ -44,7 +44,7 @@ namespace MessagePack.Formatters
                     }
                 }
 
-                offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, count);
+                MessagePackBinary.WriteMapHeader(ref bytes, ref offset, count);
 
                 var e = GetSourceEnumerator(value);
                 try
@@ -75,8 +75,7 @@ namespace MessagePack.Formatters
                 var keyFormatter = resolver.GetFormatter<TKey>();
                 var valueFormatter = resolver.GetFormatter<TValue>();
 
-                var len = MessagePackBinary.ReadMapHeader(bytes, offset, out var readSize);
-                offset += readSize;
+                var len = MessagePackBinary.ReadMapHeader(bytes, ref offset);
 
                 var dict = Create(len);
                 for (int i = 0; i < len; i++)
