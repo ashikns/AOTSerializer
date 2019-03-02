@@ -129,7 +129,6 @@ namespace Xunit
 {
     #region Extensions
 
-    [System.Diagnostics.DebuggerStepThroughAttribute]
     public static partial class AssertEx
     {
         /// <summary>Assert.Equal, if T is IEnumerable then compare value equality</summary>
@@ -153,7 +152,7 @@ namespace Xunit
         }
 
         /// <summary>Assert.True(predicate(value))</summary>
-        public static void Is<T>(this T value, Expression<Func<T, bool>> predicate, string message = "")
+        public static void Is<T>(this T value, Expression<Func<T, bool>> predicate, string message)
         {
             var condition = predicate.Compile().Invoke(value);
 
