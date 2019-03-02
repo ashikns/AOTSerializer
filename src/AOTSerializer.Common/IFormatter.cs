@@ -4,24 +4,25 @@ namespace AOTSerializer.Common
 {
     public interface IFormatter
     {
-        void Serialize(ref byte[] bytes, ref int offset, object value, IResolver resolver);
+        void Serialize(ref byte[] bytes, ref int offset, object value, Type type, IResolver resolver);
         object Deserialize(byte[] bytes, ref int offset, Type type, IResolver resolver);
     }
 
     public interface IFormatter<T> : IFormatter
     {
+        void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver);
         T Deserialize(byte[] bytes, ref int offset, IResolver resolver);
     }
 
     public abstract class FormatterBase<T> : IFormatter<T>
     {
-        public void Serialize(ref byte[] bytes, ref int offset, object value, IResolver resolver)
+        public void Serialize(ref byte[] bytes, ref int offset, object value, Type type, IResolver resolver)
         {
-            if (!(value is T))
+            if (type != typeof(T) || !(value is T castedValue))
             {
                 throw new Exception($"{nameof(value)} should be of type {typeof(T)}");
             }
-            Serialize(ref bytes, ref offset, (T)value, resolver);
+            Serialize(ref bytes, ref offset, castedValue, resolver);
         }
 
         public object Deserialize(byte[] bytes, ref int offset, Type type, IResolver resolver)

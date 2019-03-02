@@ -30,6 +30,8 @@ namespace AOTSerializer.MessagePack.Internal
     {
         private static readonly Dictionary<Type, IFormatter> formatterMap = new Dictionary<Type, IFormatter>()
         {
+            {typeof(object), ObjectFallbackFormatter.Default},
+
             // Primitive
             {typeof(Int16), Int16Formatter.Instance},
             {typeof(Int32), Int32Formatter.Instance},

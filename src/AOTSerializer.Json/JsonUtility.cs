@@ -252,6 +252,11 @@ namespace AOTSerializer.Json
             throw CreateParsingException("null", bytes, ref offset);
         }
 
+        public static void ReadIsNullWithVerify(byte[] bytes, ref int offset)
+        {
+            if (!ReadIsNull(bytes, ref offset)) throw CreateParsingException("null", bytes, ref offset);
+        }
+
         public static bool ReadIsBeginArray(byte[] bytes, ref int offset)
         {
             SkipWhiteSpace(bytes, ref offset);

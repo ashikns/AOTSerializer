@@ -8,12 +8,36 @@ namespace AOTSerializer
     {
         public static IResolver DefaultResolver { get; set; }
 
-        public static byte[] Serialize(object value)
+        public static byte[] Serialize(object value, Type type)
+        {
+            return Serialize(value, type, DefaultResolver);
+        }
+
+        public static byte[] Serialize(object value, Type type, IResolver resolver)
+        {
+            byte[] buf = null;
+            int offset = 0;
+            Serialize(ref buf, ref offset, value, type, resolver);
+            BinaryUtil.FastResize(ref buf, offset);
+            return buf;
+        }
+
+        public static void Serialize(ref byte[] buffer, ref int offset, object value, Type type)
+        {
+            Serialize(ref buffer, ref offset, value, type, DefaultResolver);
+        }
+
+        public static void Serialize(ref byte[] buffer, ref int offset, object value, Type type, IResolver resolver)
+        {
+            resolver.GetFormatterWithVerify(type).Serialize(ref buffer, ref offset, value, type, resolver);
+        }
+
+        public static byte[] Serialize<T>(T value)
         {
             return Serialize(value, DefaultResolver);
         }
 
-        public static byte[] Serialize(object value, IResolver resolver)
+        public static byte[] Serialize<T>(T value, IResolver resolver)
         {
             byte[] buf = null;
             int offset = 0;
@@ -22,14 +46,14 @@ namespace AOTSerializer
             return buf;
         }
 
-        public static void Serialize(ref byte[] buffer, ref int offset, object value)
+        public static void Serialize<T>(ref byte[] buffer, ref int offset, T value)
         {
             Serialize(ref buffer, ref offset, value, DefaultResolver);
         }
 
-        public static void Serialize(ref byte[] buffer, ref int offset, object value, IResolver resolver)
+        public static void Serialize<T>(ref byte[] buffer, ref int offset, T value, IResolver resolver)
         {
-            resolver.GetFormatterWithVerify(value.GetType()).Serialize(ref buffer, ref offset, value, resolver);
+            resolver.GetFormatterWithVerify<T>().Serialize(ref buffer, ref offset, value, resolver);
         }
 
 
