@@ -169,7 +169,7 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -188,7 +188,7 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -217,9 +217,9 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -239,10 +239,10 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -271,11 +271,11 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -296,13 +296,13 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -331,13 +331,13 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[3]);
-            resolver.GetFormatter<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
+            resolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -359,16 +359,16 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 3:
-                        item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
+                        item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -397,15 +397,15 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[3]);
-            resolver.GetFormatter<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
+            resolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[4]);
-            resolver.GetFormatter<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
+            resolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -428,19 +428,19 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 3:
-                        item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
+                        item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 4:
-                        item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
+                        item5 = resolver.GetFormatterWithVerify<T5>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -469,17 +469,17 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[3]);
-            resolver.GetFormatter<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
+            resolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[4]);
-            resolver.GetFormatter<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
+            resolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[5]);
-            resolver.GetFormatter<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
+            resolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -503,22 +503,22 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 3:
-                        item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
+                        item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 4:
-                        item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
+                        item5 = resolver.GetFormatterWithVerify<T5>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 5:
-                        item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
+                        item6 = resolver.GetFormatterWithVerify<T6>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -547,19 +547,19 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[3]);
-            resolver.GetFormatter<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
+            resolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[4]);
-            resolver.GetFormatter<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
+            resolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[5]);
-            resolver.GetFormatter<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
+            resolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[6]);
-            resolver.GetFormatter<T7>().Serialize(ref bytes, ref offset, value.Item7, resolver);
+            resolver.GetFormatterWithVerify<T7>().Serialize(ref bytes, ref offset, value.Item7, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -584,25 +584,25 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 3:
-                        item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
+                        item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 4:
-                        item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
+                        item5 = resolver.GetFormatterWithVerify<T5>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 5:
-                        item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
+                        item6 = resolver.GetFormatterWithVerify<T6>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 6:
-                        item7 = resolver.GetFormatter<T7>().Deserialize(bytes, ref offset, resolver);
+                        item7 = resolver.GetFormatterWithVerify<T7>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -631,21 +631,21 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[0]);
-            resolver.GetFormatter<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
+            resolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, ref offset, value.Item1, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[1]);
-            resolver.GetFormatter<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
+            resolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, ref offset, value.Item2, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[2]);
-            resolver.GetFormatter<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
+            resolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, ref offset, value.Item3, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[3]);
-            resolver.GetFormatter<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
+            resolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, ref offset, value.Item4, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[4]);
-            resolver.GetFormatter<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
+            resolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, ref offset, value.Item5, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[5]);
-            resolver.GetFormatter<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
+            resolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, ref offset, value.Item6, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[6]);
-            resolver.GetFormatter<T7>().Serialize(ref bytes, ref offset, value.Item7, resolver);
+            resolver.GetFormatterWithVerify<T7>().Serialize(ref bytes, ref offset, value.Item7, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[7]);
-            resolver.GetFormatter<TRest>().Serialize(ref bytes, ref offset, value.Rest, resolver);
+            resolver.GetFormatterWithVerify<TRest>().Serialize(ref bytes, ref offset, value.Rest, resolver);
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
 
@@ -671,28 +671,28 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        item1 = resolver.GetFormatter<T1>().Deserialize(bytes, ref offset, resolver);
+                        item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        item2 = resolver.GetFormatter<T2>().Deserialize(bytes, ref offset, resolver);
+                        item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 2:
-                        item3 = resolver.GetFormatter<T3>().Deserialize(bytes, ref offset, resolver);
+                        item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 3:
-                        item4 = resolver.GetFormatter<T4>().Deserialize(bytes, ref offset, resolver);
+                        item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 4:
-                        item5 = resolver.GetFormatter<T5>().Deserialize(bytes, ref offset, resolver);
+                        item5 = resolver.GetFormatterWithVerify<T5>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 5:
-                        item6 = resolver.GetFormatter<T6>().Deserialize(bytes, ref offset, resolver);
+                        item6 = resolver.GetFormatterWithVerify<T6>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 6:
-                        item7 = resolver.GetFormatter<T7>().Deserialize(bytes, ref offset, resolver);
+                        item7 = resolver.GetFormatterWithVerify<T7>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 7:
-                        item8 = resolver.GetFormatter<TRest>().Deserialize(bytes, ref offset, resolver);
+                        item8 = resolver.GetFormatterWithVerify<TRest>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);

@@ -365,9 +365,9 @@ namespace AOTSerializer.Json.Formatters
         public override void Serialize(ref byte[] bytes, ref int offset, KeyValuePair<TKey, TValue> value, IResolver resolver)
         {
             JsonUtility.WriteRaw(ref bytes, ref offset, StandardClassLibraryFormatterHelper.keyValuePairName[0]);
-            resolver.GetFormatter<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
+            resolver.GetFormatterWithVerify<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, StandardClassLibraryFormatterHelper.keyValuePairName[1]);
-            resolver.GetFormatter<TValue>().Serialize(ref bytes, ref offset, value.Value, resolver);
+            resolver.GetFormatterWithVerify<TValue>().Serialize(ref bytes, ref offset, value.Value, resolver);
 
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
@@ -391,10 +391,10 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        resultKey = resolver.GetFormatter<TKey>().Deserialize(bytes, ref offset, resolver);
+                        resultKey = resolver.GetFormatterWithVerify<TKey>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        resultValue = resolver.GetFormatter<TValue>().Deserialize(bytes, ref offset, resolver);
+                        resultValue = resolver.GetFormatterWithVerify<TValue>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -558,7 +558,7 @@ namespace AOTSerializer.Json.Formatters
             }
             else
             {
-                resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
+                resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
             }
         }
 
@@ -567,7 +567,7 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             // deserialize immediately(no delay, because capture byte[] causes memory leak)
-            var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+            var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return new Lazy<T>(() => v);
         }
     }
@@ -608,7 +608,7 @@ namespace AOTSerializer.Json.Formatters
             else
             {
                 // value.Result -> wait...!
-                resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
+                resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
             }
         }
 
@@ -616,7 +616,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+            var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return Task.FromResult(v);
         }
     }
@@ -626,12 +626,12 @@ namespace AOTSerializer.Json.Formatters
         public override void Serialize(ref byte[] bytes, ref int offset, ValueTask<T> value, IResolver resolver)
         {
             // value.Result -> wait...!
-            resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
+            resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
         }
 
         public override ValueTask<T> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
-            var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+            var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return new ValueTask<T>(v);
         }
     }

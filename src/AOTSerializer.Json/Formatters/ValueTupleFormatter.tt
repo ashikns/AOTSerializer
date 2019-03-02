@@ -62,7 +62,7 @@ namespace AOTSerializer.Json.Formatters
         {
 <# for(var j = 1; j <= i; j++) { #>
             JsonUtility.WriteRaw(ref bytes, ref offset, cache[<#= j - 1 #>]);
-            resolver.GetFormatter<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
+            resolver.GetFormatterWithVerify<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
 <# } #>
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
@@ -85,7 +85,7 @@ namespace AOTSerializer.Json.Formatters
                 {
 <# for(var j = 1; j <= i; j++) { #>
                     case <#= j - 1 #>:
-                        item<#= j #> = resolver.GetFormatter<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
+                        item<#= j #> = resolver.GetFormatterWithVerify<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
                         break;
 <# } #>
                     default:

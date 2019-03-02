@@ -4,19 +4,18 @@ namespace AOTSerializer.Common
 {
     public interface IFormatter
     {
-        void SerializeNonGeneric(ref byte[] bytes, ref int offset, object value, IResolver resolver);
-        object DeserializeNonGeneric(byte[] bytes, ref int offset, Type type, IResolver resolver);
+        void Serialize(ref byte[] bytes, ref int offset, object value, IResolver resolver);
+        object Deserialize(byte[] bytes, ref int offset, Type type, IResolver resolver);
     }
 
     public interface IFormatter<T> : IFormatter
     {
-        void Serialize(ref byte[] bytes, ref int offset, T value, IResolver resolver);
         T Deserialize(byte[] bytes, ref int offset, IResolver resolver);
     }
 
     public abstract class FormatterBase<T> : IFormatter<T>
     {
-        public void SerializeNonGeneric(ref byte[] bytes, ref int offset, object value, IResolver resolver)
+        public void Serialize(ref byte[] bytes, ref int offset, object value, IResolver resolver)
         {
             if (!(value is T))
             {
@@ -25,7 +24,7 @@ namespace AOTSerializer.Common
             Serialize(ref bytes, ref offset, (T)value, resolver);
         }
 
-        public object DeserializeNonGeneric(byte[] bytes, ref int offset, Type type, IResolver resolver)
+        public object Deserialize(byte[] bytes, ref int offset, Type type, IResolver resolver)
         {
             if (type != typeof(T))
             {

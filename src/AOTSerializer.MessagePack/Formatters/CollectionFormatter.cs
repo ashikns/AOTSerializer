@@ -19,7 +19,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<T>();
+                var formatter = resolver.GetFormatterWithVerify<T>();
 
                 MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, value.Length);
 
@@ -39,7 +39,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<T>();
+                var formatter = resolver.GetFormatterWithVerify<T>();
 
                 var len = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 var array = new T[len];
@@ -99,7 +99,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<T>();
+                var formatter = resolver.GetFormatterWithVerify<T>();
 
                 MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, value.Count);
 
@@ -121,7 +121,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var array = resolver.GetFormatter<T[]>().Deserialize(bytes, ref offset, resolver);
+                var array = resolver.GetFormatterWithVerify<T[]>().Deserialize(bytes, ref offset, resolver);
                 return new ArraySegment<T>(array, 0, array.Length);
             }
         }
@@ -138,7 +138,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<T>();
+                var formatter = resolver.GetFormatterWithVerify<T>();
 
                 var c = value.Count;
                 MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, c);
@@ -159,7 +159,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<T>();
+                var formatter = resolver.GetFormatterWithVerify<T>();
 
                 var len = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
                 var list = new List<T>(len);
@@ -188,7 +188,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 var array = value as TElement[];
                 if (array != null)
                 {
-                    var formatter = resolver.GetFormatter<TElement>();
+                    var formatter = resolver.GetFormatterWithVerify<TElement>();
 
                     MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, array.Length);
 
@@ -201,7 +201,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 }
                 else
                 {
-                    var formatter = resolver.GetFormatter<TElement>();
+                    var formatter = resolver.GetFormatterWithVerify<TElement>();
 
                     // knows count or not.
                     var seqCount = GetCount(value);
@@ -273,7 +273,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var formatter = resolver.GetFormatter<TElement>();
+                var formatter = resolver.GetFormatterWithVerify<TElement>();
 
                 var len = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
 
@@ -540,8 +540,8 @@ namespace AOTSerializer.MessagePack.Formatters
             else
             {
                 MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 2);
-                resolver.GetFormatter<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
-                resolver.GetFormatter<IEnumerable<TElement>>().Serialize(ref bytes, ref offset, value, resolver);
+                resolver.GetFormatterWithVerify<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
+                resolver.GetFormatterWithVerify<IEnumerable<TElement>>().Serialize(ref bytes, ref offset, value, resolver);
             }
         }
 
@@ -558,8 +558,8 @@ namespace AOTSerializer.MessagePack.Formatters
 
                 if (count != 2) throw new InvalidOperationException("Invalid Grouping format.");
 
-                var key = resolver.GetFormatter<TKey>().Deserialize(bytes, ref offset, resolver);
-                var value = resolver.GetFormatter<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
+                var key = resolver.GetFormatterWithVerify<TKey>().Deserialize(bytes, ref offset, resolver);
+                var value = resolver.GetFormatterWithVerify<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
                 return new Grouping<TKey, TElement>(key, value);
             }
         }
@@ -666,7 +666,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, value.Count);
             foreach (var item in value)
@@ -683,7 +683,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 return default(T);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
 
@@ -713,7 +713,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, value.Count);
             foreach (var item in value)
@@ -730,7 +730,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 return default(IList);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
 
@@ -754,7 +754,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             MessagePackBinary.WriteMapHeader(ref bytes, ref offset, value.Count);
             foreach (DictionaryEntry item in value)
@@ -772,7 +772,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 return null;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             var count = MessagePackBinary.ReadMapHeader(bytes, ref offset);
 
@@ -804,7 +804,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 MessagePackBinary.WriteNil(ref bytes, ref offset);
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             MessagePackBinary.WriteMapHeader(ref bytes, ref offset, value.Count);
             foreach (DictionaryEntry item in value)
@@ -822,7 +822,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 return null;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             var count = MessagePackBinary.ReadMapHeader(bytes, ref offset);
 

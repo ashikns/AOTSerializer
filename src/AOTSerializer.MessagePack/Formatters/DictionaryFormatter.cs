@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace MessagePack.Formatters
+namespace AOTSerializer.MessagePack.Formatters
 {
     // unfortunately, can't use IDictionary<KVP> because supports IReadOnlyDictionary.
     public abstract class DictionaryFormatterBase<TKey, TValue, TIntermediate, TEnumerator, TDictionary> : FormatterBase<TDictionary>
@@ -20,8 +20,8 @@ namespace MessagePack.Formatters
             }
             else
             {
-                var keyFormatter = resolver.GetFormatter<TKey>();
-                var valueFormatter = resolver.GetFormatter<TValue>();
+                var keyFormatter = resolver.GetFormatterWithVerify<TKey>();
+                var valueFormatter = resolver.GetFormatterWithVerify<TValue>();
 
                 int count;
                 {
@@ -72,8 +72,8 @@ namespace MessagePack.Formatters
             }
             else
             {
-                var keyFormatter = resolver.GetFormatter<TKey>();
-                var valueFormatter = resolver.GetFormatter<TValue>();
+                var keyFormatter = resolver.GetFormatterWithVerify<TKey>();
+                var valueFormatter = resolver.GetFormatterWithVerify<TValue>();
 
                 var len = MessagePackBinary.ReadMapHeader(bytes, ref offset);
 

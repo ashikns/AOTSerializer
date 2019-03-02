@@ -263,8 +263,8 @@ namespace AOTSerializer.MessagePack.Formatters
         public override void Serialize(ref byte[] bytes, ref int offset, KeyValuePair<TKey, TValue> value, IResolver resolver)
         {
             MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, 2);
-            resolver.GetFormatter<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
-            resolver.GetFormatter<TValue>().Serialize(ref bytes, ref offset, value.Value, resolver);
+            resolver.GetFormatterWithVerify<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
+            resolver.GetFormatterWithVerify<TValue>().Serialize(ref bytes, ref offset, value.Value, resolver);
         }
 
         public override KeyValuePair<TKey, TValue> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
@@ -272,8 +272,8 @@ namespace AOTSerializer.MessagePack.Formatters
             var count = MessagePackBinary.ReadArrayHeader(bytes, ref offset);
             if (count != 2) throw new InvalidOperationException("Invalid KeyValuePair format.");
 
-            var key = resolver.GetFormatter<TKey>().Deserialize(bytes, ref offset, resolver);
-            var value = resolver.GetFormatter<TValue>().Deserialize(bytes, ref offset, resolver);
+            var key = resolver.GetFormatterWithVerify<TKey>().Deserialize(bytes, ref offset, resolver);
+            var value = resolver.GetFormatterWithVerify<TValue>().Deserialize(bytes, ref offset, resolver);
             return new KeyValuePair<TKey, TValue>(key, value);
         }
     }
@@ -448,7 +448,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
+                resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
             }
         }
 
@@ -462,7 +462,7 @@ namespace AOTSerializer.MessagePack.Formatters
             else
             {
                 // deserialize immediately(no delay, because capture byte[] causes memory leak)
-                var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+                var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
                 return new Lazy<T>(() => v);
             }
         }
@@ -516,7 +516,7 @@ namespace AOTSerializer.MessagePack.Formatters
             else
             {
                 // value.Result -> wait...!
-                resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
+                resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
             }
         }
 
@@ -529,7 +529,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+                var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
                 return Task.FromResult(v);
             }
         }
@@ -539,12 +539,12 @@ namespace AOTSerializer.MessagePack.Formatters
     {
         public override void Serialize(ref byte[] bytes, ref int offset, ValueTask<T> value, IResolver resolver)
         {
-            resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
+            resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Result, resolver);
         }
 
         public override ValueTask<T> Deserialize(byte[] bytes, ref int offset, IResolver resolver)
         {
-            var v = resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+            var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return new ValueTask<T>(v);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Runtime.ExceptionServices;
 
 namespace AOTSerializer.Common
 {
@@ -54,6 +55,57 @@ namespace AOTSerializer.Common
     {
         public FormatterNotRegisteredException(string message) : base(message)
         {
+        }
+    }
+
+    public static class FormatterResolverExtensions
+    {
+        public static IFormatter GetFormatterWithVerify(this IResolver resolver, Type t)
+        {
+            IFormatter formatter;
+            try
+            {
+                formatter = resolver.GetFormatter(t);
+            }
+            catch (TypeInitializationException ex)
+            {
+                // The fact that we're using static constructors to initialize this is an internal detail.
+                // Rethrow the inner exception if there is one.
+                // Do it carefully so as to not stomp on the original callstack.
+                ExceptionDispatchInfo.Capture(ex.InnerException ?? ex).Throw();
+                throw new InvalidOperationException("Unreachable"); // keep the compiler happy
+            }
+
+            if (formatter == null)
+            {
+                throw new FormatterNotRegisteredException(t.FullName + " is not registered in this resolver. resolver:" + resolver.GetType().Name);
+            }
+
+            return formatter;
+        }
+
+        public static IFormatter<T> GetFormatterWithVerify<T>(this IResolver resolver)
+        {
+            IFormatter<T> formatter;
+            try
+            {
+                formatter = resolver.GetFormatter<T>();
+            }
+            catch (TypeInitializationException ex)
+            {
+                // The fact that we're using static constructors to initialize this is an internal detail.
+                // Rethrow the inner exception if there is one.
+                // Do it carefully so as to not stomp on the original callstack.
+                ExceptionDispatchInfo.Capture(ex.InnerException ?? ex).Throw();
+                throw new InvalidOperationException("Unreachable"); // keep the compiler happy
+            }
+
+            if (formatter == null)
+            {
+                throw new FormatterNotRegisteredException(typeof(T).FullName + " is not registered in this resolver. resolver:" + resolver.GetType().Name);
+            }
+
+            return formatter;
         }
     }
 }

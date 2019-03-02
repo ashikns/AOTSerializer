@@ -20,7 +20,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             if (value.Length != 0)
@@ -39,7 +39,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) return null;
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
 
             var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
             var segmentOffset = segment.Offset;
@@ -68,7 +68,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             if (value.Count != 0)
@@ -87,7 +87,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return default; }
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
 
             var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
             var segmentOffset = segment.Offset;
@@ -116,7 +116,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             if (value.Count != 0)
@@ -135,7 +135,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<T>();
+            var formatter = resolver.GetFormatterWithVerify<T>();
             var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
             var segmentOffset = segment.Offset;
 
@@ -164,7 +164,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<TElement>();
+            var formatter = resolver.GetFormatterWithVerify<TElement>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             // Unity's foreach struct enumerator causes boxing so iterate manually.
@@ -189,7 +189,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<TElement>();
+            var formatter = resolver.GetFormatterWithVerify<TElement>();
 
             var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
             var segmentOffset = segment.Offset;
@@ -394,9 +394,9 @@ namespace AOTSerializer.Json.Formatters
             }
 
             JsonUtility.WriteRaw(ref bytes, ref offset, CollectionFormatterHelper.groupingName[0]);
-            resolver.GetFormatter<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
+            resolver.GetFormatterWithVerify<TKey>().Serialize(ref bytes, ref offset, value.Key, resolver);
             JsonUtility.WriteRaw(ref bytes, ref offset, CollectionFormatterHelper.groupingName[1]);
-            resolver.GetFormatter<IEnumerable<TElement>>().Serialize(ref bytes, ref offset, value.AsEnumerable(), resolver);
+            resolver.GetFormatterWithVerify<IEnumerable<TElement>>().Serialize(ref bytes, ref offset, value.AsEnumerable(), resolver);
 
             JsonUtility.WriteEndObject(ref bytes, ref offset);
         }
@@ -418,10 +418,10 @@ namespace AOTSerializer.Json.Formatters
                 switch (key)
                 {
                     case 0:
-                        resultKey = resolver.GetFormatter<TKey>().Deserialize(bytes, ref offset, resolver);
+                        resultKey = resolver.GetFormatterWithVerify<TKey>().Deserialize(bytes, ref offset, resolver);
                         break;
                     case 1:
-                        resultValue = resolver.GetFormatter<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
+                        resultValue = resolver.GetFormatterWithVerify<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
                         JsonUtility.ReadNextBlock(bytes, ref offset, out _);
@@ -446,7 +446,7 @@ namespace AOTSerializer.Json.Formatters
             }
             else
             {
-                resolver.GetFormatter<IEnumerable<IGrouping<TKey, TElement>>>().Serialize(ref bytes, ref offset, value.AsEnumerable(), resolver);
+                resolver.GetFormatterWithVerify<IEnumerable<IGrouping<TKey, TElement>>>().Serialize(ref bytes, ref offset, value.AsEnumerable(), resolver);
             }
         }
 
@@ -454,7 +454,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<IGrouping<TKey, TElement>>();
+            var formatter = resolver.GetFormatterWithVerify<IGrouping<TKey, TElement>>();
             var intermediateCollection = new Dictionary<TKey, IGrouping<TKey, TElement>>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
@@ -547,7 +547,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             if (value.Count != 0)
@@ -566,7 +566,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) return null;
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
             var list = new T();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
@@ -592,7 +592,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
 
@@ -622,7 +622,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
@@ -648,7 +648,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             var e = value.GetEnumerator();
@@ -677,7 +677,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
@@ -703,7 +703,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginArray(ref bytes, ref offset);
             if (value.Count != 0)
@@ -722,7 +722,7 @@ namespace AOTSerializer.Json.Formatters
         {
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
-            var formatter = resolver.GetFormatter<object>();
+            var formatter = resolver.GetFormatterWithVerify<object>();
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);

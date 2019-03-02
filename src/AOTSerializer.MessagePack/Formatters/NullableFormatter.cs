@@ -13,7 +13,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                resolver.GetFormatter<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
+                resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, ref offset, value.Value, resolver);
             }
         }
 
@@ -26,7 +26,7 @@ namespace AOTSerializer.MessagePack.Formatters
             }
             else
             {
-                return resolver.GetFormatter<T>().Deserialize(bytes, ref offset, resolver);
+                return resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             }
         }
     }

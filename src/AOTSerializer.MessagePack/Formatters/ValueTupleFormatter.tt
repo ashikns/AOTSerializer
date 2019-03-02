@@ -23,7 +23,7 @@ namespace AOTSerializer.MessagePack.Formatters
             MessagePackBinary.WriteArrayHeader(ref bytes, ref offset, <#= i #>);
 
 <# for(var j = 1; j <= i; j++) { #>
-            resolver.GetFormatter<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
+            resolver.GetFormatterWithVerify<<#= toT(j) #>>().Serialize(ref bytes, ref offset, value.<#= toItem(j) #>, resolver);
 <# } #>
         }
 
@@ -39,7 +39,7 @@ namespace AOTSerializer.MessagePack.Formatters
                 if (count != <#= i #>) throw new InvalidOperationException("Invalid ValueTuple count");
 
 <# for(var j = 1; j <= i; j++) { #>
-                var item<#= j #> = resolver.GetFormatter<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
+                var item<#= j #> = resolver.GetFormatterWithVerify<<#= toT(j) #>>().Deserialize(bytes, ref offset, resolver);
 <# } #>
 
                 return new ValueTuple<<#= ts #>>(<#= string.Join(", ", Enumerable.Range(1, i).Select(x => "item" + x)) #>);

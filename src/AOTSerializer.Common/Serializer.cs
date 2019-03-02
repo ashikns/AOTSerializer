@@ -29,7 +29,7 @@ namespace AOTSerializer
 
         public static void Serialize(ref byte[] buffer, ref int offset, object value, IResolver resolver)
         {
-            resolver.GetFormatter(value.GetType()).SerializeNonGeneric(ref buffer, ref offset, value, resolver);
+            resolver.GetFormatterWithVerify(value.GetType()).Serialize(ref buffer, ref offset, value, resolver);
         }
 
 
@@ -51,7 +51,7 @@ namespace AOTSerializer
 
         public static object Deserialize(byte[] data, ref int offset, Type type, IResolver resolver)
         {
-            return resolver.GetFormatter(type).DeserializeNonGeneric(data, ref offset, type, resolver);
+            return resolver.GetFormatterWithVerify(type).Deserialize(data, ref offset, type, resolver);
         }
 
         public static T Deserialize<T>(byte[] data)
@@ -72,7 +72,7 @@ namespace AOTSerializer
 
         public static T Deserialize<T>(byte[] data, ref int offset, IResolver resolver)
         {
-            return resolver.GetFormatter<T>().Deserialize(data, ref offset, resolver);
+            return resolver.GetFormatterWithVerify<T>().Deserialize(data, ref offset, resolver);
         }
     }
 }

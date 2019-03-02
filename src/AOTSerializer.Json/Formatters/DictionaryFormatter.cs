@@ -31,9 +31,9 @@ namespace AOTSerializer.Json.Formatters
                     return;
                 }
 
-                var valueFormatter = resolver.GetFormatter<TValue>();
+                var valueFormatter = resolver.GetFormatterWithVerify<TValue>();
 
-                if (resolver.GetFormatter<TKey>() is IObjectPropertyNameFormatter<TKey> keyFormatter)
+                if (resolver.GetFormatterWithVerify<TKey>() is IObjectPropertyNameFormatter<TKey> keyFormatter)
                 {
                     var item = e.Current;
                     keyFormatter.SerializeToPropertyName(ref bytes, ref offset, item.Key, resolver);
@@ -77,12 +77,12 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            if (!(resolver.GetFormatter<TKey>() is IObjectPropertyNameFormatter<TKey> keyFormatter))
+            if (!(resolver.GetFormatterWithVerify<TKey>() is IObjectPropertyNameFormatter<TKey> keyFormatter))
             {
                 throw new InvalidOperationException(typeof(TKey) + " does not support dictionary key deserialize.");
             }
 
-            var valueFormatter = resolver.GetFormatter<TValue>();
+            var valueFormatter = resolver.GetFormatterWithVerify<TValue>();
             var dict = Create();
 
             JsonUtility.ReadIsBeginObjectWithVerify(bytes, ref offset);
@@ -260,7 +260,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var valueFormatter = resolver.GetFormatter<object>();
+            var valueFormatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginObject(ref bytes, ref offset);
 
@@ -300,7 +300,7 @@ namespace AOTSerializer.Json.Formatters
                 return default;
             }
 
-            var valueFormatter = resolver.GetFormatter<object>();
+            var valueFormatter = resolver.GetFormatterWithVerify<object>();
             var dict = new T();
 
             JsonUtility.ReadIsBeginObjectWithVerify(bytes, ref offset);
@@ -329,7 +329,7 @@ namespace AOTSerializer.Json.Formatters
                 return;
             }
 
-            var valueFormatter = resolver.GetFormatter<object>();
+            var valueFormatter = resolver.GetFormatterWithVerify<object>();
 
             JsonUtility.WriteBeginObject(ref bytes, ref offset);
 
@@ -369,7 +369,7 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var valueFormatter = resolver.GetFormatter<object>();
+            var valueFormatter = resolver.GetFormatterWithVerify<object>();
             var dict = new Dictionary<object, object>();
 
             JsonUtility.ReadIsBeginObjectWithVerify(bytes, ref offset);
