@@ -1,25 +1,14 @@
-﻿using AOTSerializer.Common;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Xunit;
 
 namespace AOTSerializer.Tests
 {
     public class CollectionTest : IClassFixture<ResolverFixture>
     {
-        private IResolver Resolver { get; }
-
-        public CollectionTest(ResolverFixture fixture)
-        {
-            Resolver = fixture.Resolver;
-        }
-
         private T Convert<T>(T value)
         {
-            return Serializer.Deserialize<T>(Serializer.Serialize(value, Resolver), Resolver);
+            return Serializer.Deserialize<T>(Serializer.Serialize(value));
         }
 
         public static object[][] collectionTestData = new object[][]

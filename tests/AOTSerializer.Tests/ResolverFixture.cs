@@ -11,6 +11,8 @@ namespace AOTSerializer.Tests
         {
             Resolver = new CompositeResolver(new[] { Json.Resolvers.BuiltinResolver.Instance }, null);
             //Resolver = new CompositeResolver(new[] { MessagePack.Resolvers.BuiltinResolver.Instance }, null);
+
+            Serializer.DefaultResolver = Resolver;
         }
     }
 }
