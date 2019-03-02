@@ -11,8 +11,8 @@ namespace AOTSerializer.Resolvers
 
         public CompositeResolver(IResolver[] resolvers, IFormatter[] formatters)
         {
-            _resolvers = resolvers;
-            _formatters = formatters;
+            _resolvers = resolvers ?? new IResolver[] { };
+            _formatters = formatters ?? new IFormatter[] { };
         }
 
         protected override IFormatter FindFormatter(Type t)
