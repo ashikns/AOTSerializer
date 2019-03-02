@@ -492,9 +492,9 @@ namespace AOTSerializer.Json
             {
                 case JsonToken.BeginObject:
                 case JsonToken.BeginArray:
+                    if (stack == 1) { numElements++; }
                     offset++;
                     stack++;
-                    if (stack == 1) { numElements++; }
                     goto AGAIN;
                 case JsonToken.EndObject:
                 case JsonToken.EndArray:
@@ -502,20 +502,16 @@ namespace AOTSerializer.Json
                     stack--;
                     if (stack != 0) { goto AGAIN; }
                     break;
-                case JsonToken.ValueSeparator:
-                    if (stack == 1) { numElements++; }
-                    goto case JsonToken.NameSeparator;
                 case JsonToken.True:
                 case JsonToken.False:
                 case JsonToken.Null:
                 case JsonToken.String:
                 case JsonToken.Number:
                 case JsonToken.NameSeparator:
-                    do
-                    {
-                        ReadNextCore(token, bytes, ref offset);
-                        token = GetCurrentJsonToken(bytes, ref offset);
-                    } while (!((int)token < 5)); // !(None, Begin/EndObject, Begin/EndArray)
+                    if (stack == 1) { numElements++; }
+                    goto case JsonToken.ValueSeparator;
+                case JsonToken.ValueSeparator:
+                    ReadNextCore(token, bytes, ref offset);
                     goto AGAIN;
                 case JsonToken.None:
                 default:
