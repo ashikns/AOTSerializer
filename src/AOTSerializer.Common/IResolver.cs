@@ -20,12 +20,20 @@ namespace AOTSerializer.Common
 
         public IFormatter<T> GetFormatter<T>()
         {
-            if (!(GetFormatter(typeof(T)) is IFormatter<T> formatter))
+            var formatter = GetFormatter(typeof(T));
+            if (formatter != null)
             {
-                throw new Exception($"Got non null formatter but could not cast it to {typeof(IFormatter<T>).Name}");
+                if (formatter is IFormatter<T> f)
+                {
+                    return f;
+                }
+                else
+                {
+                    throw new Exception($"Got non null formatter but could not cast it to {typeof(IFormatter<T>).Name}");
+                }
             }
 
-            return formatter;
+            return null;
         }
 
         public IFormatter GetFormatter(Type t)
@@ -34,11 +42,6 @@ namespace AOTSerializer.Common
             {
                 formatter = FindFormatter(t);
                 FormatterCache.TryAdd(t, formatter);
-            }
-
-            if (formatter == null)
-            {
-                throw new FormatterNotRegisteredException(t.FullName + " is not registered in this resolver. resolver:" + this.GetType().Name);
             }
 
             return formatter;
