@@ -1,6 +1,7 @@
 ﻿using AOTSerializer.Common;
 using AOTSerializer.Json.Internal;
 using System;
+using System.Collections.Generic;
 
 namespace AOTSerializer.Json.Formatters
 {
@@ -116,20 +117,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Int16>();
 
-            var result = new Int16[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadInt16(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadInt16(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadInt16(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -245,20 +252,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Int32>();
 
-            var result = new Int32[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadInt32(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadInt32(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadInt32(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -374,20 +387,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Int64>();
 
-            var result = new Int64[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadInt64(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadInt64(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadInt64(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -503,20 +522,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<UInt16>();
 
-            var result = new UInt16[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadUInt16(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadUInt16(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadUInt16(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -632,20 +657,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<UInt32>();
 
-            var result = new UInt32[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadUInt32(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadUInt32(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadUInt32(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -761,20 +792,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<UInt64>();
 
-            var result = new UInt64[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadUInt64(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadUInt64(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadUInt64(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -890,20 +927,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Single>();
 
-            var result = new Single[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadSingle(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadSingle(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadSingle(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -1019,20 +1062,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Double>();
 
-            var result = new Double[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadDouble(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadDouble(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadDouble(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -1148,20 +1197,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<Boolean>();
 
-            var result = new Boolean[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadBoolean(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadBoolean(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadBoolean(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -1356,20 +1411,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<SByte>();
 
-            var result = new SByte[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.ReadSByte(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.ReadSByte(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.ReadSByte(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 

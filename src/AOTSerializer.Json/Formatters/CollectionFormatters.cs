@@ -40,21 +40,26 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) return null;
 
             var formatter = resolver.GetFormatterWithVerify<T>();
+            var result = new List<T>();
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            var result = new T[numElements];
-            int index = 0;
-
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = formatter.Deserialize(segment.Array, ref segmentOffset, resolver);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            return result.ToArray();
         }
     }
 
@@ -88,18 +93,26 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return default; }
 
             var formatter = resolver.GetFormatterWithVerify<T>();
-
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
-
-            var result = new T[numElements];
+            var result = new T[4];
             int index = 0;
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = formatter.Deserialize(segment.Array, ref segmentOffset, resolver);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                new ArraySegment<T>(result, 0, result.Length);
+            }
+            else
+            {
+                result[index++] = formatter.Deserialize(bytes, ref offset, resolver);
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+
+                if (result.Length < index + 1) { Array.Resize(ref result, result.Length * 2); }
+                result[index++] = formatter.Deserialize(bytes, ref offset, resolver);
             }
 
             return new ArraySegment<T>(result, 0, result.Length);
@@ -136,16 +149,23 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var formatter = resolver.GetFormatterWithVerify<T>();
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<T>();
 
-            var result = new List<T>(numElements);
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result.Add(formatter.Deserialize(segment.Array, ref segmentOffset, resolver));
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result;
+            }
+            else
+            {
+                result.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return result;
@@ -190,17 +210,23 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var formatter = resolver.GetFormatterWithVerify<TElement>();
+            var intermediate = Create();
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            var intermediate = Create(numElements);
-
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                Add(intermediate, formatter.Deserialize(segment.Array, ref segmentOffset, resolver));
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return Complete(intermediate);
+            }
+            else
+            {
+                Add(intermediate, formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                Add(intermediate, formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return Complete(intermediate);
@@ -210,7 +236,7 @@ namespace AOTSerializer.Json.Formatters
         protected abstract TEnumerator GetSourceEnumerator(TCollection source);
 
         // abstraction for deserialize
-        protected abstract TIntermediate Create(int count);
+        protected abstract TIntermediate Create();
         protected abstract void Add(TIntermediate collection, TElement value);
         protected abstract TCollection Complete(TIntermediate intermediateCollection);
     }
@@ -236,7 +262,7 @@ namespace AOTSerializer.Json.Formatters
     public sealed class GenericCollectionFormatter<TElement, TCollection> : CollectionFormatterBase<TElement, TCollection>
          where TCollection : class, ICollection<TElement>, new()
     {
-        protected override TCollection Create(int count)
+        protected override TCollection Create()
         {
             return new TCollection();
         }
@@ -254,7 +280,7 @@ namespace AOTSerializer.Json.Formatters
             collection.AddLast(value);
         }
 
-        protected override LinkedList<T> Create(int count)
+        protected override LinkedList<T> Create()
         {
             return new LinkedList<T>();
         }
@@ -267,9 +293,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Enqueue(value);
         }
 
-        protected override Queue<T> Create(int count)
+        protected override Queue<T> Create()
         {
-            return new Queue<T>(count);
+            return new Queue<T>();
         }
     }
 
@@ -281,9 +307,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override Stack<T> Complete(List<T> intermediateCollection)
@@ -304,7 +330,7 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override HashSet<T> Create(int count)
+        protected override HashSet<T> Create()
         {
             return new HashSet<T>();
         }
@@ -322,9 +348,9 @@ namespace AOTSerializer.Json.Formatters
             return new ReadOnlyCollection<T>(intermediateCollection);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
     }
 
@@ -335,9 +361,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override IList<T> Complete(List<T> intermediateCollection)
@@ -353,9 +379,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override ICollection<T> Complete(List<T> intermediateCollection)
@@ -371,9 +397,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override IEnumerable<T> Complete(List<T> intermediateCollection)
@@ -458,12 +484,23 @@ namespace AOTSerializer.Json.Formatters
             var intermediateCollection = new Dictionary<TKey, IGrouping<TKey, TElement>>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
-            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                return new Lookup<TKey, TElement>(intermediateCollection);
+            }
+            else
             {
                 var g = formatter.Deserialize(bytes, ref offset, resolver);
                 intermediateCollection.Add(g.Key, g);
+            }
 
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
                 JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+
+                var g = formatter.Deserialize(bytes, ref offset, resolver);
+                intermediateCollection.Add(g.Key, g);
             }
 
             return new Lookup<TKey, TElement>(intermediateCollection);
@@ -570,10 +607,20 @@ namespace AOTSerializer.Json.Formatters
             var list = new T();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
-            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                return list;
+            }
+            else
             {
                 list.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
                 JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                list.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return list;
@@ -626,10 +673,20 @@ namespace AOTSerializer.Json.Formatters
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
-            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                return list;
+            }
+            else
             {
                 list.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
                 JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                list.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return list;
@@ -681,10 +738,20 @@ namespace AOTSerializer.Json.Formatters
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
-            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                return list;
+            }
+            else
             {
                 list.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
                 JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                list.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return list;
@@ -726,10 +793,20 @@ namespace AOTSerializer.Json.Formatters
             var list = new List<object>();
 
             JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
-            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                return list;
+            }
+            else
             {
                 list.Add(formatter.Deserialize(bytes, ref offset, resolver));
+            }
+
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
                 JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                list.Add(formatter.Deserialize(bytes, ref offset, resolver));
             }
 
             return list;
@@ -743,7 +820,7 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override ObservableCollection<T> Create(int count)
+        protected override ObservableCollection<T> Create()
         {
             return new ObservableCollection<T>();
         }
@@ -756,7 +833,7 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override ObservableCollection<T> Create(int count)
+        protected override ObservableCollection<T> Create()
         {
             return new ObservableCollection<T>();
         }
@@ -774,9 +851,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override IReadOnlyList<T> Complete(List<T> intermediateCollection)
@@ -792,9 +869,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override IReadOnlyCollection<T> Complete(List<T> intermediateCollection)
@@ -815,7 +892,7 @@ namespace AOTSerializer.Json.Formatters
             return intermediateCollection;
         }
 
-        protected override HashSet<T> Create(int count)
+        protected override HashSet<T> Create()
         {
             return new HashSet<T>();
         }
@@ -828,7 +905,7 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override ConcurrentBag<T> Create(int count)
+        protected override ConcurrentBag<T> Create()
         {
             return new ConcurrentBag<T>();
         }
@@ -841,7 +918,7 @@ namespace AOTSerializer.Json.Formatters
             collection.Enqueue(value);
         }
 
-        protected override ConcurrentQueue<T> Create(int count)
+        protected override ConcurrentQueue<T> Create()
         {
             return new ConcurrentQueue<T>();
         }
@@ -854,9 +931,9 @@ namespace AOTSerializer.Json.Formatters
             collection.Add(value);
         }
 
-        protected override List<T> Create(int count)
+        protected override List<T> Create()
         {
-            return new List<T>(count);
+            return new List<T>();
         }
 
         protected override ConcurrentStack<T> Complete(List<T> intermediateCollection)

@@ -23,6 +23,7 @@
 using AOTSerializer.Common;
 using AOTSerializer.Json.Internal;
 using System;
+using System.Collections.Generic;
 
 namespace AOTSerializer.Json.Formatters
 {
@@ -140,20 +141,26 @@ namespace AOTSerializer.Json.Formatters
                 return null;
             }
 
-            var segment = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out var numElements);
-            var segmentOffset = segment.Offset;
+            var result = new List<<#= t.Name #>>();
 
-            var result = new <#= t.Name #>[numElements];
-            int index = 0;
+            JsonUtility.ReadIsBeginArrayWithVerify(bytes, ref offset);
 
-            JsonUtility.ReadIsBeginArrayWithVerify(segment.Array, ref segmentOffset);
-            while (!JsonUtility.ReadIsEndArray(segment.Array, ref segmentOffset))
+            if (JsonUtility.ReadIsEndArray(bytes, ref offset))
             {
-                result[index++] = JsonUtility.Read<#= t.Name #>(bytes, ref offset);
-                JsonUtility.ReadIsValueSeparatorWithVerify(segment.Array, ref segmentOffset);
+                return result.ToArray();
+            }
+            else
+            {
+                result.Add(JsonUtility.Read<#= t.Name #>(bytes, ref offset));
             }
 
-            return result;
+            while (!JsonUtility.ReadIsEndArray(bytes, ref offset))
+            {
+                JsonUtility.ReadIsValueSeparatorWithVerify(bytes, ref offset);
+                result.Add(JsonUtility.Read<#= t.Name #>(bytes, ref offset));
+            }
+
+            return result.ToArray();
         }
     }
 <# } #>
