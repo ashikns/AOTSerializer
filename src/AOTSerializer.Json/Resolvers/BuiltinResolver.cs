@@ -63,10 +63,10 @@ namespace AOTSerializer.Json.Internal
             
             // DateTime
             {typeof(DateTime), DateTimeFormatter.ISO8601},
-            {typeof(TimeSpan), TimeSpanFormatter.ISO8601},
+            {typeof(TimeSpan), TimeSpanFormatter.Default},
             {typeof(DateTimeOffset), DateTimeOffsetFormatter.ISO8601},
             {typeof(DateTime?), new StaticNullableFormatter<DateTime>(DateTimeFormatter.ISO8601)}, // ISO8601
-            {typeof(TimeSpan?), new StaticNullableFormatter<TimeSpan>(TimeSpanFormatter.ISO8601)},
+            {typeof(TimeSpan?), new StaticNullableFormatter<TimeSpan>(TimeSpanFormatter.Default)},
             {typeof(DateTimeOffset?),new StaticNullableFormatter<DateTimeOffset>(DateTimeOffsetFormatter.ISO8601)},
 
             {typeof(string), NullableStringFormatter.Default},

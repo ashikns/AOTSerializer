@@ -89,7 +89,6 @@ namespace AOTSerializer.Json.Formatters
     public sealed class TimeSpanFormatter : FormatterBase<TimeSpan>
     {
         public static readonly IFormatter<TimeSpan> Default = new TimeSpanFormatter();
-        public static readonly IFormatter<TimeSpan> ISO8601 = new TimeSpanFormatter("o");
 
         private readonly string formatString;
 
