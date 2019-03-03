@@ -31,8 +31,8 @@ namespace AOTSerializer.Json.Formatters
         {
             var str = JsonUtility.ReadString(bytes, ref offset);
             return formatString == null
-                ? DateTime.Parse(str, CultureInfo.InvariantCulture)
-                : DateTime.ParseExact(str, formatString, CultureInfo.InvariantCulture);
+                ? DateTime.Parse(str, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+                : DateTime.ParseExact(str, formatString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         }
     }
 
