@@ -5,7 +5,7 @@ using Xunit;
 
 namespace AOTSerializer.Tests
 {
-    public class AutomataSafe
+    public class AutomataSafe : IClassFixture<ResolverFixture>
     {
         [Theory]
         [InlineData("a")]
