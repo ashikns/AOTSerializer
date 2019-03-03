@@ -18,11 +18,11 @@ namespace AOTSerializer.Common
     {
         public void Serialize(ref byte[] bytes, ref int offset, object value, Type type, IResolver resolver)
         {
-            if (type != typeof(T) || !(value is T castedValue))
+            if (type != typeof(T))
             {
                 throw new Exception($"{nameof(value)} should be of type {typeof(T)}");
             }
-            Serialize(ref bytes, ref offset, castedValue, resolver);
+            Serialize(ref bytes, ref offset, (T)value, resolver);
         }
 
         public object Deserialize(byte[] bytes, ref int offset, Type type, IResolver resolver)
