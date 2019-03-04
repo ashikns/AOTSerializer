@@ -14,6 +14,27 @@ namespace AOTSerializer.MessagePack
 {
     public static class FormatterMap
     {
+        public static readonly Dictionary<Type, (string WriteFunc, string ReadFunc)> PrimitiveFuncs = new Dictionary<Type, (string WriteFunc, string ReadFunc)>
+        {
+            { typeof(short), (nameof(MessagePackBinary.WriteInt16), nameof(MessagePackBinary.ReadInt16)) },
+            { typeof(int), (nameof(MessagePackBinary.WriteInt32), nameof(MessagePackBinary.ReadInt32)) },
+            { typeof(long), (nameof(MessagePackBinary.WriteInt64), nameof(MessagePackBinary.ReadInt64)) },
+            { typeof(ushort), (nameof(MessagePackBinary.WriteUInt16), nameof(MessagePackBinary.ReadUInt16)) },
+            { typeof(uint), (nameof(MessagePackBinary.WriteUInt32), nameof(MessagePackBinary.ReadUInt32)) },
+            { typeof(ulong), (nameof(MessagePackBinary.WriteUInt64), nameof(MessagePackBinary.ReadUInt64)) },
+            { typeof(float), (nameof(MessagePackBinary.WriteSingle), nameof(MessagePackBinary.ReadSingle)) },
+            { typeof(double), (nameof(MessagePackBinary.WriteDouble), nameof(MessagePackBinary.ReadDouble)) },
+            { typeof(bool), (nameof(MessagePackBinary.WriteBoolean), nameof(MessagePackBinary.ReadBoolean)) },
+            { typeof(byte), (nameof(MessagePackBinary.WriteByte), nameof(MessagePackBinary.ReadByte)) },
+            { typeof(sbyte), (nameof(MessagePackBinary.WriteSByte), nameof(MessagePackBinary.ReadSByte)) },
+            { typeof(string), (nameof(MessagePackBinary.WriteString), nameof(MessagePackBinary.ReadString)) },
+
+            { typeof(Nil), (nameof(MessagePackBinary.WriteNil), nameof(MessagePackBinary.ReadNil)) },
+            { typeof(char), (nameof(MessagePackBinary.WriteChar), nameof(MessagePackBinary.ReadChar)) },
+            { typeof(byte[]), (nameof(MessagePackBinary.WriteBytes), nameof(MessagePackBinary.ReadBytes)) },
+            { typeof(DateTime), (nameof(MessagePackBinary.WriteDateTime), nameof(MessagePackBinary.ReadDateTime)) },
+        };
+
         public static readonly Dictionary<Type, IFormatter> ConcreteFormatterMap = new Dictionary<Type, IFormatter>()
         {
             {typeof(object), ObjectFallbackFormatter.Default},

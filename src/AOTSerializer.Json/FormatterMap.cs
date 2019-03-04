@@ -14,6 +14,22 @@ namespace AOTSerializer.Json
 {
     public static class FormatterMap
     {
+        public static readonly Dictionary<Type, (string WriteFunc, string ReadFunc)> PrimitiveFuncs = new Dictionary<Type, (string WriteFunc, string ReadFunc)>
+        {
+            { typeof(short), (nameof(JsonUtility.WriteInt16), nameof(JsonUtility.ReadInt16)) },
+            { typeof(int), (nameof(JsonUtility.WriteInt32), nameof(JsonUtility.ReadInt32)) },
+            { typeof(long), (nameof(JsonUtility.WriteInt64), nameof(JsonUtility.ReadInt64)) },
+            { typeof(ushort), (nameof(JsonUtility.WriteUInt16), nameof(JsonUtility.ReadUInt16)) },
+            { typeof(uint), (nameof(JsonUtility.WriteUInt32), nameof(JsonUtility.ReadUInt32)) },
+            { typeof(ulong), (nameof(JsonUtility.WriteUInt64), nameof(JsonUtility.ReadUInt64)) },
+            { typeof(float), (nameof(JsonUtility.WriteSingle), nameof(JsonUtility.ReadSingle)) },
+            { typeof(double), (nameof(JsonUtility.WriteDouble), nameof(JsonUtility.ReadDouble)) },
+            { typeof(bool), (nameof(JsonUtility.WriteBoolean), nameof(JsonUtility.ReadBoolean)) },
+            { typeof(byte), (nameof(JsonUtility.WriteByte), nameof(JsonUtility.ReadByte)) },
+            { typeof(sbyte), (nameof(JsonUtility.WriteSByte), nameof(JsonUtility.ReadSByte)) },
+            { typeof(string), (nameof(JsonUtility.WriteString), nameof(JsonUtility.ReadString)) },
+        };
+
         public static readonly Dictionary<Type, IFormatter> ConcreteFormatterMap = new Dictionary<Type, IFormatter>()
         {
             {typeof(object), ObjectFallbackFormatter.Default},
