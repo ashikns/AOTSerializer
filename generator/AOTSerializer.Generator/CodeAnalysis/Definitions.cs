@@ -7,10 +7,10 @@ namespace AOTSerializer.Generator
     {
         string FullName { get; }
 
-        string GetFormatterName();
+        string FormatterName { get; }
     }
 
-    public abstract class ObjectSerializationInfo : IResolverRegisterInfo
+    public class ObjectSerializationInfo : IResolverRegisterInfo
     {
         public string Name { get; set; }
         public string FullName { get; set; }
@@ -19,6 +19,8 @@ namespace AOTSerializer.Generator
         public bool IsStruct { get { return !IsClass; } }
         public MemberSerializationInfo[] ConstructorParameters { get; set; }
         public MemberSerializationInfo[] Members { get; set; }
+
+        public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
 
         public int WriteCount
         {
@@ -33,8 +35,6 @@ namespace AOTSerializer.Generator
             var args = string.Join(", ", ConstructorParameters.Select(x => "__" + x.Name + "__"));
             return $"{FullName}({args})";
         }
-
-        public abstract string GetFormatterName();
     }
 
     public abstract class MemberSerializationInfo
@@ -54,35 +54,25 @@ namespace AOTSerializer.Generator
         public abstract string GetDeserializeMethodString();
     }
 
-    public abstract class EnumSerializationInfo : IResolverRegisterInfo
+    public class EnumSerializationInfo : IResolverRegisterInfo
     {
         public string Namespace { get; set; }
         public string Name { get; set; }
         public string FullName { get; set; }
         public string UnderlyingType { get; set; }
 
-        public abstract string GetFormatterName();
+        public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
     }
 
     public class GenericSerializationInfo : IResolverRegisterInfo, IEquatable<GenericSerializationInfo>
     {
         public string FullName { get; set; }
 
-        private string FormatterName { get; set; }
+        public string FormatterName { get; set; }
 
         public bool Equals(GenericSerializationInfo other)
         {
             return FullName.Equals(other.FullName);
-        }
-
-        public string GetFormatterName()
-        {
-            return FormatterName;
-        }
-
-        public void SetFormatterName(string formatterName)
-        {
-            FormatterName = formatterName;
         }
 
         public override int GetHashCode()

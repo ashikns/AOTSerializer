@@ -176,11 +176,13 @@ namespace AOTSerializer.Generator
 
         private void CollectEnum(INamedTypeSymbol type)
         {
-            var info = CreateEnumInfo();
-            info.Name = type.Name;
-            info.Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString();
-            info.FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            info.UnderlyingType = type.EnumUnderlyingType.ToDisplayString(BinaryWriteFormat);
+            var info = new EnumSerializationInfo
+            {
+                Name = type.Name,
+                Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString(),
+                FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                UnderlyingType = type.EnumUnderlyingType.ToDisplayString(BinaryWriteFormat)
+            };
 
             CollectedEnumInfo.Add(info);
         }
@@ -193,12 +195,10 @@ namespace AOTSerializer.Generator
             var info = new GenericSerializationInfo
             {
                 FullName = array.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                FormatterName = GetArrayFormatterName(array)
             };
 
-            info.SetFormatterName(GetArrayFormatterName(array));
-
             CollectedGenericInfo.Add(info);
-
             return;
         }
 
@@ -214,8 +214,8 @@ namespace AOTSerializer.Generator
                     var nullableInfo = new GenericSerializationInfo
                     {
                         FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                        FormatterName = GetNullableFormatterName(type.TypeArguments[0])
                     };
-                    nullableInfo.SetFormatterName(GetNullableFormatterName(type.TypeArguments[0]));
 
                     CollectedGenericInfo.Add(nullableInfo);
                 }
@@ -229,13 +229,12 @@ namespace AOTSerializer.Generator
             }
 
             var genericType = type.ConstructUnboundGenericType();
-            var formatter = GetGenericFormatterName(genericType, type.TypeArguments);
 
             var info = new GenericSerializationInfo
             {
                 FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                FormatterName = GetGenericFormatterName(genericType, type.TypeArguments)
             };
-            info.SetFormatterName(formatter);
 
             CollectedGenericInfo.Add(info);
 
@@ -427,13 +426,15 @@ namespace AOTSerializer.Generator
                 }
             }
 
-            var info = CreateObjectInfo();
-            info.IsClass = isClass;
-            info.ConstructorParameters = constructorParameters.ToArray();
-            info.Members = stringMembers.Values.ToArray();
-            info.Name = type.ToDisplayString(ShortTypeNameFormat).Replace(".", "_");
-            info.FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            info.Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString();
+            var info = new ObjectSerializationInfo
+            {
+                IsClass = isClass,
+                ConstructorParameters = constructorParameters.ToArray(),
+                Members = stringMembers.Values.ToArray(),
+                Name = type.ToDisplayString(ShortTypeNameFormat).Replace(".", "_"),
+                FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString()
+            };
 
             CollectedObjectInfo.Add(info);
         }
@@ -471,11 +472,9 @@ namespace AOTSerializer.Generator
             return true;
         }
 
-        protected abstract ObjectSerializationInfo CreateObjectInfo();
         protected abstract MemberSerializationInfo CreateMemberInfo();
-        protected abstract EnumSerializationInfo CreateEnumInfo();
         protected abstract bool IsEmbeddedType(ITypeSymbol type);
-        protected abstract string GetNullableFormatterName(ITypeSymbol type);
+        protected abstract string GetNullableFormatterName(ITypeSymbol typeArg);
         protected abstract string GetArrayFormatterName(IArrayTypeSymbol arrayType);
         protected abstract string GetGenericFormatterName(ITypeSymbol genericType, IEnumerable<ITypeSymbol> typeArgs);
     }
