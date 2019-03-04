@@ -67,7 +67,7 @@ namespace AOTSerializer.Generator
         }
     }
 
-    public abstract class TypeCollector
+    public abstract class CodeGenerator
     {
         private INamedTypeSymbol[] TargetTypes { get; }
         private ReferenceSymbols TypeReferences { get; }
@@ -80,7 +80,7 @@ namespace AOTSerializer.Generator
 
         // --- 
 
-        protected TypeCollector(Compilation compilation)
+        protected CodeGenerator(Compilation compilation)
         {
             TypeReferences = new ReferenceSymbols(compilation);
 

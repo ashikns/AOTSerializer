@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace AOTSerializer.Generator.Json
 {
-    public class TypeCollectorImpl : TypeCollector
+    public class CodeGeneratorImpl : CodeGenerator
     {
         private HashSet<ITypeSymbol> ConcreteFormatters { get; }
         private Dictionary<ITypeSymbol, string> GenericFormatters { get; }
         private Dictionary<ITypeSymbol, (string WriteFunc, string ReadFunc)> PrimitiveFuncs { get; }
 
-        public TypeCollectorImpl(Compilation compilation) : base(compilation)
+        public CodeGeneratorImpl(Compilation compilation) : base(compilation)
         {
             ConcreteFormatters = new HashSet<ITypeSymbol>();
             GenericFormatters = new Dictionary<ITypeSymbol, string>();
