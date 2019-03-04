@@ -93,8 +93,13 @@ namespace AOTSerializer.Generator
                 .ToArray();
         }
 
-        // EntryPoint
-        public (ObjectSerializationInfo[] objectInfo, EnumSerializationInfo[] enumInfo, GenericSerializationInfo[] genericInfo) Collect()
+        public string Generate()
+        {
+            Collect();
+            return Generate(CollectedObjectInfo, CollectedGenericInfo.Distinct(), CollectedEnumInfo);
+        }
+
+        private void Collect()
         {
             ResetWorkspace();
 
@@ -102,8 +107,6 @@ namespace AOTSerializer.Generator
             {
                 CollectCore(item);
             }
-
-            return (CollectedObjectInfo.ToArray(), CollectedEnumInfo.ToArray(), CollectedGenericInfo.Distinct().ToArray());
         }
 
         private void ResetWorkspace()
@@ -468,6 +471,11 @@ namespace AOTSerializer.Generator
         protected abstract string GetArrayFormatterName(IArrayTypeSymbol arrayType);
         protected abstract string GetNullableFormatterName(INamedTypeSymbol nullableType);
         protected abstract string GetGenericFormatterName(INamedTypeSymbol genericType);
+
+        protected abstract string Generate(
+            IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
+            IEnumerable<GenericSerializationInfo> genericSerializationInfos,
+            IEnumerable<EnumSerializationInfo> enumSerializationInfos);
     }
 
     public class MessagePackGeneratorResolveFailedException : Exception

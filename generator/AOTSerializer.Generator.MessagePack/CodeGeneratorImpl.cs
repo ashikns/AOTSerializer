@@ -110,5 +110,13 @@ namespace AOTSerializer.Generator.MessagePack
 
             return info;
         }
+
+        protected override string Generate(
+            IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
+            IEnumerable<GenericSerializationInfo> genericSerializationInfos,
+            IEnumerable<EnumSerializationInfo> enumSerializationInfos)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
