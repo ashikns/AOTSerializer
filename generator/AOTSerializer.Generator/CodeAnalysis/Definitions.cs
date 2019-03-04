@@ -1,33 +1,71 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Linq;
 
 namespace AOTSerializer.Generator
 {
     public interface IResolverRegisterInfo
     {
+        ITypeSymbol Type { get; }
         string FullName { get; }
-
         string FormatterName { get; }
+    }
+
+    internal static class DisplayFormat
+    {
+        public static readonly SymbolDisplayFormat BinaryWriteFormat = new SymbolDisplayFormat(
+                genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameOnly);
+        public static readonly SymbolDisplayFormat ShortTypeNameFormat = new SymbolDisplayFormat(
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
+    }
+
+    public class MemberSerializationInfo
+    {
+        public ITypeSymbol Type { get; }
+        public string Name { get; }
+        public bool IsProperty { get; }
+        public bool IsField { get; }
+
+        public string StringKey => Name;
+        public string ShortTypeName => Type.ToDisplayString(DisplayFormat.BinaryWriteFormat);
+
+        public bool IsWritable { get; set; }
+        public bool IsReadable { get; set; }
+        public bool IsExtensionData { get; set; }
+
+        public string SerializeMethodString { get; set; }
+        public string DeserializeMethodString { get; set; }
+
+        public MemberSerializationInfo(ISymbol symbol, ITypeSymbol type)
+        {
+            Name = symbol.Name;
+            Type = type;
+            IsProperty = true;
+            IsField = false;
+        }
     }
 
     public class ObjectSerializationInfo : IResolverRegisterInfo
     {
-        public string Name { get; set; }
-        public string FullName { get; set; }
-        public string Namespace { get; set; }
-        public bool IsClass { get; set; }
-        public bool IsStruct { get { return !IsClass; } }
+        public ITypeSymbol Type { get; }
+
+        public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
+        public string Name => Type.ToDisplayString(DisplayFormat.ShortTypeNameFormat).Replace(".", "_");
+        public string FullName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        public string Namespace => Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString();
+        public bool IsClass => !Type.IsValueType;
+        public bool IsStruct => Type.IsValueType;
+        public int WriteCount => Members.Count(x => x.IsReadable);
+
         public MemberSerializationInfo[] ConstructorParameters { get; set; }
         public MemberSerializationInfo[] Members { get; set; }
 
-        public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
 
-        public int WriteCount
+        public ObjectSerializationInfo(ITypeSymbol type)
         {
-            get
-            {
-                return Members.Count(x => x.IsReadable);
-            }
+            Type = type;
         }
 
         public string GetConstructorString()
@@ -37,38 +75,35 @@ namespace AOTSerializer.Generator
         }
     }
 
-    public abstract class MemberSerializationInfo
-    {
-        public bool IsProperty { get; set; }
-        public bool IsField { get; set; }
-        public bool IsWritable { get; set; }
-        public bool IsReadable { get; set; }
-        public bool IsExtensionData { get; set; }
-        public string StringKey { get; set; }
-        public string Type { get; set; }
-        public string Name { get; set; }
-        public string ShortTypeName { get; set; }
-
-        public abstract string GetSerializeMethodString();
-
-        public abstract string GetDeserializeMethodString();
-    }
-
     public class EnumSerializationInfo : IResolverRegisterInfo
     {
-        public string Namespace { get; set; }
-        public string Name { get; set; }
-        public string FullName { get; set; }
-        public string UnderlyingType { get; set; }
+        public ITypeSymbol Type { get; }
+        public string UnderlyingType { get; }
 
         public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
+        public string Namespace => Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString();
+        public string Name => Type.Name;
+        public string FullName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        public EnumSerializationInfo(INamedTypeSymbol type)
+        {
+            Type = type;
+            UnderlyingType = type.EnumUnderlyingType.ToDisplayString(DisplayFormat.BinaryWriteFormat);
+        }
     }
 
     public class GenericSerializationInfo : IResolverRegisterInfo, IEquatable<GenericSerializationInfo>
     {
-        public string FullName { get; set; }
+        public ITypeSymbol Type { get; }
+        public string FormatterName { get; }
 
-        public string FormatterName { get; set; }
+        public string FullName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        public GenericSerializationInfo(ITypeSymbol type, string formatterName)
+        {
+            Type = type;
+            FormatterName = formatterName;
+        }
 
         public bool Equals(GenericSerializationInfo other)
         {

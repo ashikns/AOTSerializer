@@ -69,13 +69,6 @@ namespace AOTSerializer.Generator
 
     public abstract class TypeCollector
     {
-        private static readonly SymbolDisplayFormat BinaryWriteFormat = new SymbolDisplayFormat(
-                genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable,
-                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameOnly);
-        private static readonly SymbolDisplayFormat ShortTypeNameFormat = new SymbolDisplayFormat(
-                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
-
         private INamedTypeSymbol[] TargetTypes { get; }
         private ReferenceSymbols TypeReferences { get; }
 
@@ -89,12 +82,6 @@ namespace AOTSerializer.Generator
 
         protected TypeCollector(Compilation compilation)
         {
-            var compilationErrors = compilation.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error).ToArray();
-            if (compilationErrors.Length != 0)
-            {
-                throw new InvalidOperationException($"detect compilation error:{string.Join("\n", compilationErrors.Select(x => x.ToString()))}");
-            }
-
             TypeReferences = new ReferenceSymbols(compilation);
 
             TargetTypes = compilation.GetNamedTypeSymbols()
@@ -135,7 +122,7 @@ namespace AOTSerializer.Generator
                 return;
             }
 
-            if (IsEmbeddedType(typeSymbol))
+            if (HasBuiltinFormatter(typeSymbol))
             {
                 return;
             }
@@ -176,67 +163,34 @@ namespace AOTSerializer.Generator
 
         private void CollectEnum(INamedTypeSymbol type)
         {
-            var info = new EnumSerializationInfo
-            {
-                Name = type.Name,
-                Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString(),
-                FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                UnderlyingType = type.EnumUnderlyingType.ToDisplayString(BinaryWriteFormat)
-            };
-
-            CollectedEnumInfo.Add(info);
+            CollectedEnumInfo.Add(new EnumSerializationInfo(type));
         }
 
         private void CollectArray(IArrayTypeSymbol array)
         {
-            var elemType = array.ElementType;
-            CollectCore(elemType);
-
-            var info = new GenericSerializationInfo
-            {
-                FullName = array.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                FormatterName = GetArrayFormatterName(array)
-            };
-
-            CollectedGenericInfo.Add(info);
+            CollectCore(array.ElementType);
+            CollectedGenericInfo.Add(new GenericSerializationInfo(array, GetArrayFormatterName(array)));
             return;
         }
 
         private void CollectGeneric(INamedTypeSymbol type)
         {
-            // nullable
-            if (type.IsNullable())
-            {
-                CollectCore(type.TypeArguments[0]);
-
-                if (!IsEmbeddedType(type.TypeArguments[0]))
-                {
-                    var nullableInfo = new GenericSerializationInfo
-                    {
-                        FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                        FormatterName = GetNullableFormatterName(type.TypeArguments[0])
-                    };
-
-                    CollectedGenericInfo.Add(nullableInfo);
-                }
-                return;
-            }
-
-            // collection
             foreach (var item in type.TypeArguments)
             {
                 CollectCore(item);
             }
 
-            var genericType = type.ConstructUnboundGenericType();
-
-            var info = new GenericSerializationInfo
+            // nullable
+            if (type.IsNullable())
             {
-                FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                FormatterName = GetGenericFormatterName(genericType, type.TypeArguments)
-            };
+                CollectedGenericInfo.Add(new GenericSerializationInfo(type, GetNullableFormatterName(type)));
+                return;
+            }
 
-            CollectedGenericInfo.Add(info);
+            // collection
+            CollectedGenericInfo.Add(new GenericSerializationInfo(type, GetGenericFormatterName(type)));
+
+            var genericType = type.ConstructUnboundGenericType();
 
             if (TypeReferences.GenericTypeSpecialCases.ContainsKey(genericType))
             {
@@ -262,8 +216,8 @@ namespace AOTSerializer.Generator
 
             foreach (var item in type.GetAllMembers().OfType<IPropertySymbol>().Where(x => !x.IsOverride))
             {
-                if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
                 if (item.IsIndexer) { continue; }
+                if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
                 var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
@@ -299,16 +253,10 @@ namespace AOTSerializer.Generator
                     isWritable = (item.SetMethod != null) && bool.Parse(jsonExtensionAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonExtensionReadable) ?? "true");
                 }
 
-                var member = CreateMemberInfo();
+                var member = MakeMemberSerializationInfo(item, item.Type);
                 member.IsReadable = isReadable;
                 member.IsWritable = isWritable;
-                member.StringKey = item.Name;
-                member.IsProperty = true;
-                member.IsField = false;
                 member.IsExtensionData = jsonExtensionAttrib != null;
-                member.Name = item.Name;
-                member.Type = item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                member.ShortTypeName = item.Type.ToDisplayString(BinaryWriteFormat);
 
                 if (!member.IsReadable && !member.IsWritable) { continue; }
                 stringMembers.Add(member.StringKey, member);
@@ -317,8 +265,8 @@ namespace AOTSerializer.Generator
             }
             foreach (var item in type.GetAllMembers().OfType<IFieldSymbol>())
             {
-                if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
                 if (item.IsImplicitlyDeclared) continue;
+                if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
                 var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
@@ -354,16 +302,10 @@ namespace AOTSerializer.Generator
                     isWritable = bool.Parse(jsonExtensionAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonExtensionReadable) ?? "true");
                 }
 
-                var member = CreateMemberInfo();
+                var member = MakeMemberSerializationInfo(item, item.Type);
                 member.IsReadable = isReadable;
                 member.IsWritable = isWritable;
-                member.StringKey = item.Name;
-                member.IsProperty = false;
-                member.IsField = true;
                 member.IsExtensionData = jsonExtensionAttrib != null;
-                member.Name = item.Name;
-                member.Type = item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                member.ShortTypeName = item.Type.ToDisplayString(BinaryWriteFormat);
 
                 if (!member.IsReadable && !member.IsWritable) { continue; }
                 stringMembers.Add(member.StringKey, member);
@@ -382,9 +324,6 @@ namespace AOTSerializer.Generator
                 ctor = ctorEnumerator.Current;
             }
 
-            // struct allows null ctor
-            if (ctor == null && isClass) { throw new MessagePackGeneratorResolveFailedException("can't find public constructor. type:" + type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)); }
-
             var constructorParameters = new List<MemberSerializationInfo>();
             if (ctor != null)
             {
@@ -401,7 +340,7 @@ namespace AOTSerializer.Generator
                         if (len == 1)
                         {
                             paramMember = hasKey.First().Value;
-                            if (item.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == paramMember.Type && paramMember.IsReadable)
+                            if (item.Type == paramMember.Type && paramMember.IsReadable)
                             {
                                 constructorParameters.Add(paramMember);
                             }
@@ -426,14 +365,12 @@ namespace AOTSerializer.Generator
                 }
             }
 
-            var info = new ObjectSerializationInfo
+            if (stringMembers.Count == 0) { return; }
+
+            var info = new ObjectSerializationInfo(type)
             {
-                IsClass = isClass,
                 ConstructorParameters = constructorParameters.ToArray(),
                 Members = stringMembers.Values.ToArray(),
-                Name = type.ToDisplayString(ShortTypeNameFormat).Replace(".", "_"),
-                FullName = type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                Namespace = type.ContainingNamespace.IsGlobalNamespace ? null : type.ContainingNamespace.ToDisplayString()
             };
 
             CollectedObjectInfo.Add(info);
@@ -472,11 +409,65 @@ namespace AOTSerializer.Generator
             return true;
         }
 
-        protected abstract MemberSerializationInfo CreateMemberInfo();
-        protected abstract bool IsEmbeddedType(ITypeSymbol type);
-        protected abstract string GetNullableFormatterName(ITypeSymbol typeArg);
+        protected static ITypeSymbol GetTypeSymbolForType(Type type, Compilation compilation)
+        {
+            if (type.IsArray && compilation.GetTypeByMetadataName(type.GetElementType().FullName) is var arrayElementType && arrayElementType != null)
+            {
+                var allSymbols = compilation.GetSymbolsWithName((_) => true);
+                foreach (var symbol in allSymbols)
+                {
+                    switch (symbol.Kind)
+                    {
+                        case SymbolKind.ArrayType:
+                            var currentArrayType = (IArrayTypeSymbol)symbol;
+                            if (currentArrayType.ElementType == arrayElementType
+                                && currentArrayType.Rank == type.GetArrayRank())
+                            {
+                                return currentArrayType;
+                            }
+                            break;
+                        case SymbolKind.Field:
+                            var fieldType = ((IFieldSymbol)symbol).Type;
+                            if (fieldType.Kind == SymbolKind.ArrayType
+                                && ((IArrayTypeSymbol)fieldType).ElementType == arrayElementType
+                                && ((IArrayTypeSymbol)fieldType).Rank == type.GetArrayRank())
+                            {
+                                return fieldType;
+                            }
+                            break;
+                        case SymbolKind.Property:
+                            var propertyType = ((IPropertySymbol)symbol).Type;
+                            if (propertyType.Kind == SymbolKind.ArrayType
+                                && ((IArrayTypeSymbol)propertyType).ElementType == arrayElementType
+                                && ((IArrayTypeSymbol)propertyType).Rank == type.GetArrayRank())
+                            {
+                                return propertyType;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (!type.IsConstructedGenericType)
+            {
+                return compilation.GetTypeByMetadataName(type.FullName);
+            }
+
+            // get all typeInfo's for the Type arguments 
+            var typeArgumentsTypeInfos = type.GenericTypeArguments.Select(a => GetTypeSymbolForType(a, compilation));
+
+            var openType = type.GetGenericTypeDefinition();
+            var typeSymbol = compilation.GetTypeByMetadataName(openType.FullName);
+            return typeSymbol.Construct(typeArgumentsTypeInfos.ToArray());
+        }
+
+        protected abstract bool HasBuiltinFormatter(ITypeSymbol type);
+        protected abstract MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type);
         protected abstract string GetArrayFormatterName(IArrayTypeSymbol arrayType);
-        protected abstract string GetGenericFormatterName(ITypeSymbol genericType, IEnumerable<ITypeSymbol> typeArgs);
+        protected abstract string GetNullableFormatterName(INamedTypeSymbol nullableType);
+        protected abstract string GetGenericFormatterName(INamedTypeSymbol genericType);
     }
 
     public class MessagePackGeneratorResolveFailedException : Exception

@@ -12,7 +12,7 @@ using StLogger = Microsoft.Build.Logging.StructuredLogger;
 namespace AOTSerializer.Generator
 {
     // Utility and Extension methods for Roslyn
-    internal static class RoslynExtensions
+    public static class RoslynExtensions
     {
         private static (string fname, string args) GetBuildCommandLine(string csprojPath, string tempPath, bool useDotNet)
         {
@@ -256,11 +256,11 @@ namespace AOTSerializer.Generator
             Console.WriteLine(e);
         }
 
-        public static Compilation GetCompilationFromProject(
+        public static Compilation GetCompilationFromFiles(
             IEnumerable<string> inputFiles,
             IEnumerable<string> inputDirectories,
             IEnumerable<string> additionalReferenceDirectories = null,
-            IEnumerable<string> preprocessorSymbols = null)
+            params string[] preprocessorSymbols)
         {
             var parseOptions = new CSharpParseOptions(LanguageVersion.Default, DocumentationMode.Parse, SourceCodeKind.Regular, preprocessorSymbols ?? new string[0]);
             var references = new List<MetadataReference>();
@@ -339,9 +339,15 @@ namespace AOTSerializer.Generator
             return compilation;
         }
 
-        public static async Task<Compilation> GetCompilationFromProject(string csprojPath, params string[] preprocessorSymbols)
+        public static async Task<Compilation> GetCompilationFromProject(
+            string csprojPath,
+            IEnumerable<string> filesToInclude = null,
+            IEnumerable<string> dirsToInclude = null,
+            params string[] preprocessorSymbols)
         {
             var build = await GetBuildResult(csprojPath, preprocessorSymbols).ConfigureAwait(false);
+
+            Compilation projectCompilation;
 
             using (var workspace = GetWorkspaceFromBuild(build, preprocessorSymbols))
             {
@@ -351,9 +357,60 @@ namespace AOTSerializer.Generator
                     .WithParseOptions((project.ParseOptions as CSharpParseOptions).WithPreprocessorSymbols(preprocessorSymbols))
                     .WithCompilationOptions((project.CompilationOptions as CSharpCompilationOptions).WithAllowUnsafe(true));
 
-                var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
-                return compilation;
+                projectCompilation = await project.GetCompilationAsync().ConfigureAwait(false);
             }
+
+            if (filesToInclude == null && dirsToInclude == null)
+            {
+                return projectCompilation;
+            }
+
+            var references = new List<MetadataReference> { projectCompilation.ToMetadataReference() };
+            var parseOptions = new CSharpParseOptions(LanguageVersion.Default, DocumentationMode.Parse, SourceCodeKind.Regular, preprocessorSymbols);
+            var syntaxTrees = new List<SyntaxTree>();
+
+            var referenceDlls = Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location), "*.dll");
+            foreach (var dllFile in referenceDlls)
+            {
+                references.Add(MetadataReference.CreateFromFile(dllFile));
+            }
+
+            foreach (var dir in dirsToInclude ?? new string[0])
+            {
+                var dlls = Directory.GetFiles(dir, "*.dll", SearchOption.AllDirectories);
+                foreach (var dll in dlls)
+                {
+                    references.Add(MetadataReference.CreateFromFile(dll));
+                }
+
+                var files = Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    var text = File.ReadAllText(file);
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(text, parseOptions));
+                }
+            }
+
+            foreach (var path in filesToInclude ?? new string[0])
+            {
+                if (path.EndsWith(".dll", StringComparison.Ordinal))
+                {
+                    references.Add(MetadataReference.CreateFromFile(path));
+                }
+
+                if (path.EndsWith(".cs", StringComparison.Ordinal))
+                {
+                    var text = File.ReadAllText(path);
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(text, parseOptions));
+                }
+            }
+
+            CSharpCompilation compilation = CSharpCompilation.Create(
+                "In-Memory",
+                syntaxTrees: syntaxTrees,
+                references: references
+            );
+            return compilation;
         }
 
         public static IEnumerable<INamedTypeSymbol> GetNamedTypeSymbols(this Compilation compilation)
