@@ -370,7 +370,7 @@ namespace AOTSerializer.MessagePack.Formatters
         }
     }
 
-    public sealed class QeueueFormatter<T> : CollectionFormatterBase<T, Queue<T>, Queue<T>.Enumerator, Queue<T>>
+    public sealed class QueueFormatter<T> : CollectionFormatterBase<T, Queue<T>, Queue<T>.Enumerator, Queue<T>>
     {
         protected override int? GetCount(Queue<T> sequence)
         {

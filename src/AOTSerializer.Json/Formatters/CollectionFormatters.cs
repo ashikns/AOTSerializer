@@ -286,7 +286,7 @@ namespace AOTSerializer.Json.Formatters
         }
     }
 
-    public sealed class QeueueFormatter<T> : CollectionFormatterBase<T, Queue<T>>
+    public sealed class QueueFormatter<T> : CollectionFormatterBase<T, Queue<T>>
     {
         protected override void Add(Queue<T> collection, T value)
         {
