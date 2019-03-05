@@ -1,10 +1,12 @@
 ﻿using AOTSerializer.Common;
+using AOTSerializer.Generator.Json.Templates;
 using AOTSerializer.Json;
 using AOTSerializer.Json.Formatters;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace AOTSerializer.Generator.Json
 {
@@ -13,6 +15,8 @@ namespace AOTSerializer.Generator.Json
         private HashSet<ITypeSymbol> ConcreteFormatters { get; }
         private Dictionary<ITypeSymbol, string> GenericFormatters { get; }
         private Dictionary<ITypeSymbol, (string WriteFunc, string ReadFunc)> PrimitiveFuncs { get; }
+
+        protected override string FormatterNamespacePrefix => "AOTSerializer.Json.Formatters.";
 
         public CodeGeneratorImpl(Compilation compilation) : base(compilation)
         {
@@ -116,7 +120,48 @@ namespace AOTSerializer.Generator.Json
             IEnumerable<GenericSerializationInfo> genericSerializationInfos,
             IEnumerable<EnumSerializationInfo> enumSerializationInfos)
         {
-            throw new NotImplementedException();
+            var objectFormatterTemplates = objectSerializationInfos
+                .GroupBy(x => x.Namespace)
+                .Select(x => new FormatterTemplate()
+                {
+                    Namespace = x.Key,
+                    ObjectSerializationInfos = x.ToArray(),
+                })
+                .ToArray();
+
+            var enumFormatterTemplates = enumSerializationInfos
+                .GroupBy(x => x.Namespace)
+                .Select(x => new EnumTemplate()
+                {
+                    Namespace = x.Key,
+                    EnumSerializationInfos = x.ToArray()
+                })
+                .ToArray();
+
+            var resolverTemplate = new ResolverTemplate()
+            {
+                Namespace = "AOTSerializer.Json.Resolvers",
+                ResolverName = "GeneratedResolver",
+                RegisterInfos = genericSerializationInfos.Cast<IResolverRegisterInfo>().Concat(enumSerializationInfos).Concat(objectSerializationInfos).ToArray()
+            };
+
+            var sb = new StringBuilder();
+            sb.AppendLine(resolverTemplate.TransformText());
+            sb.AppendLine();
+            foreach (var item in enumFormatterTemplates)
+            {
+                var text = item.TransformText();
+                sb.AppendLine(text);
+            }
+            sb.AppendLine();
+            sb.AppendLine();
+            foreach (var item in objectFormatterTemplates)
+            {
+                var text = item.TransformText();
+                sb.AppendLine(text);
+            }
+
+            return sb.ToString();
         }
     }
 }

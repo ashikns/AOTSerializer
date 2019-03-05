@@ -27,9 +27,11 @@ namespace AOTSerializer.Generator
         public string Name { get; }
         public bool IsProperty { get; }
         public bool IsField { get; }
+        public string TypeArguments { get; }
 
         public string StringKey => Name;
         public string ShortTypeName => Type.ToDisplayString(DisplayFormat.BinaryWriteFormat);
+        public string FullTypeName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
         public bool IsWritable { get; set; }
         public bool IsReadable { get; set; }
@@ -44,6 +46,11 @@ namespace AOTSerializer.Generator
             Type = type;
             IsProperty = true;
             IsField = false;
+
+            if (type is INamedTypeSymbol namedType && namedType.IsGenericType)
+            {
+                TypeArguments = string.Join(", ", namedType.TypeArguments.Select(x => x.ToDisplayString()));
+            }
         }
     }
 
@@ -54,11 +61,13 @@ namespace AOTSerializer.Generator
         public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
         public string Name => Type.ToDisplayString(DisplayFormat.ShortTypeNameFormat).Replace(".", "_");
         public string FullName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        public string Namespace => Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString();
+        public string Namespace => NamespacePrefix + (Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString());
         public bool IsClass => !Type.IsValueType;
         public bool IsStruct => Type.IsValueType;
         public int WriteCount => Members.Count(x => x.IsReadable);
 
+        public string NamespacePrefix { get; set; }
+        public bool HasConstructor { get; set; }
         public MemberSerializationInfo[] ConstructorParameters { get; set; }
         public MemberSerializationInfo[] Members { get; set; }
 
@@ -81,9 +90,11 @@ namespace AOTSerializer.Generator
         public string UnderlyingType { get; }
 
         public string FormatterName => (Namespace == null ? Name : Namespace + "." + Name) + "Formatter";
-        public string Namespace => Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString();
+        public string Namespace => NamespacePrefix + (Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString());
         public string Name => Type.Name;
         public string FullName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        public string NamespacePrefix { get; set; }
 
         public EnumSerializationInfo(INamedTypeSymbol type)
         {

@@ -166,7 +166,7 @@ namespace AOTSerializer.Generator
 
         private void CollectEnum(INamedTypeSymbol type)
         {
-            CollectedEnumInfo.Add(new EnumSerializationInfo(type));
+            CollectedEnumInfo.Add(new EnumSerializationInfo(type) { NamespacePrefix = FormatterNamespacePrefix });
         }
 
         private void CollectArray(IArrayTypeSymbol array)
@@ -209,7 +209,7 @@ namespace AOTSerializer.Generator
             var isClass = !type.IsValueType;
 
             var dataContractAttribute = type.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataContractAttribute);
-            var jsonObjectAttribute = type.GetAttributes().FindAttributeShortName(TypeReferences.JsonObject);
+            var jsonObjectAttribute = type.GetAttributes().FindAttribute(TypeReferences.JsonObject);
             var isMarkedOptIn = dataContractAttribute != null ||
                 jsonObjectAttribute?.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonObjectSerializationModeKey) == TypeReferences.JsonObjectSerializationModeValueOptIn;
 
@@ -223,8 +223,8 @@ namespace AOTSerializer.Generator
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
-                var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
-                var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
+                var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
+                var jsonExtensionAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonExtensionData);
 
                 if (isMarkedOptIn && dataMemberAttrib == null && jsonPropertyAttrib == null && jsonExtensionAttrib == null) continue;
 
@@ -272,8 +272,8 @@ namespace AOTSerializer.Generator
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
-                var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
-                var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
+                var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
+                var jsonExtensionAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonExtensionData);
 
                 if (isMarkedOptIn && dataMemberAttrib == null && jsonPropertyAttrib == null && jsonExtensionAttrib == null) continue;
 
@@ -314,6 +314,8 @@ namespace AOTSerializer.Generator
                 stringMembers.Add(member.StringKey, member);
                 CollectCore(item.Type); // recursive collect
             }
+
+            if (stringMembers.Count == 0) { return; }
 
             // GetConstructor
             var ctorEnumerator =
@@ -368,12 +370,12 @@ namespace AOTSerializer.Generator
                 }
             }
 
-            if (stringMembers.Count == 0) { return; }
-
             var info = new ObjectSerializationInfo(type)
             {
                 ConstructorParameters = constructorParameters.ToArray(),
                 Members = stringMembers.Values.ToArray(),
+                HasConstructor = ctor != null,
+                NamespacePrefix = FormatterNamespacePrefix,
             };
 
             CollectedObjectInfo.Add(info);
@@ -459,11 +461,14 @@ namespace AOTSerializer.Generator
             }
 
             // get all typeInfo's for the Type arguments 
-            var typeArgumentsTypeInfos = type.GenericTypeArguments.Select(a => GetTypeSymbolForType(a, compilation));
+            var typeArgumentsTypeInfos = type.GenericTypeArguments.Select(a => GetTypeSymbolForType(a, compilation)).ToArray();
 
             var openType = type.GetGenericTypeDefinition();
             var typeSymbol = compilation.GetTypeByMetadataName(openType.FullName);
-            return typeSymbol.Construct(typeArgumentsTypeInfos.ToArray());
+
+            return typeSymbol != null && typeArgumentsTypeInfos.All(t => t != null)
+                ? typeSymbol.Construct(typeArgumentsTypeInfos)
+                : null;
         }
 
         protected abstract bool HasBuiltinFormatter(ITypeSymbol type);
@@ -476,6 +481,8 @@ namespace AOTSerializer.Generator
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
             IEnumerable<GenericSerializationInfo> genericSerializationInfos,
             IEnumerable<EnumSerializationInfo> enumSerializationInfos);
+
+        protected abstract string FormatterNamespacePrefix { get; }
     }
 
     public class MessagePackGeneratorResolveFailedException : Exception
