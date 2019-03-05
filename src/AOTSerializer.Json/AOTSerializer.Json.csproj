@@ -18,6 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\Program Files\Unity\Hub\Editor\2018.3.7f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Formatters\PrimitiveFormatter.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PrimitiveFormatter.cs</LastGenOutput>

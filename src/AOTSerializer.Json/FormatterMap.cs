@@ -1,5 +1,6 @@
 ﻿using AOTSerializer.Common;
 using AOTSerializer.Json.Formatters;
+using AOTSerializer.Json.Formatters.UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace AOTSerializer.Json
 {
@@ -124,6 +126,30 @@ namespace AOTSerializer.Json
             {typeof(Complex), ComplexFormatter.Default},
             {typeof(Complex?), new StaticNullableFormatter<Complex>(ComplexFormatter.Default)},
             {typeof(Task), TaskUnitFormatter.Default},
+
+            // Unity
+            {typeof(Keyframe[]), new ArrayFormatter<Keyframe>() },
+            {typeof(GradientColorKey[]), new ArrayFormatter<GradientColorKey>() },
+            {typeof(GradientAlphaKey[]), new ArrayFormatter<GradientAlphaKey>() },
+            {typeof(WeightedMode), new WeightedModeFormatter() },
+            {typeof(WrapMode), new WrapModeFormatter() },
+            {typeof(GradientMode), new GradientModeFormatter() },
+            {typeof(Vector2), new Vector2Formatter() },
+            {typeof(Vector3), new Vector3Formatter() },
+            {typeof(Vector4), new Vector4Formatter() },
+            {typeof(Quaternion), new QuaternionFormatter() },
+            {typeof(Color), new ColorFormatter() },
+            {typeof(Bounds), new BoundsFormatter() },
+            {typeof(Rect), new RectFormatter() },
+            {typeof(Keyframe), new KeyframeFormatter() },
+            {typeof(AnimationCurve), new AnimationCurveFormatter() },
+            {typeof(RectOffset), new RectOffsetFormatter() },
+            {typeof(GradientColorKey), new GradientColorKeyFormatter() },
+            {typeof(GradientAlphaKey), new GradientAlphaKeyFormatter() },
+            {typeof(Gradient), new GradientFormatter() },
+            {typeof(Matrix4x4), new Matrix4x4Formatter() },
+            {typeof(Color32), new Color32Formatter() },
+            {typeof(LayerMask), new LayerMaskFormatter() },
         };
 
         public static readonly Dictionary<Type, Type> GenericFormatterMap = new Dictionary<Type, Type>

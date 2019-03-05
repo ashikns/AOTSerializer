@@ -230,6 +230,7 @@ namespace AOTSerializer.Generator
             {
                 if (item.IsIndexer) { continue; }
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
+                if (item.Type == type) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
                 var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
@@ -265,6 +266,12 @@ namespace AOTSerializer.Generator
                     isWritable = (item.SetMethod != null) && bool.Parse(jsonExtensionAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonExtensionReadable) ?? "true");
                 }
 
+                if (!isWritable && !type.Constructors.Any(c => c.Parameters.Any(p => string.Compare(p.Name, item.Name, true) == 0)))
+                {
+                    // No set method for property and no constructor takes an argument with this name
+                    continue;
+                }
+
                 var member = MakeMemberSerializationInfo(item, item.Type);
                 member.IsReadable = isReadable;
                 member.IsWritable = isWritable;
@@ -279,6 +286,7 @@ namespace AOTSerializer.Generator
             {
                 if (item.IsImplicitlyDeclared) continue;
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
+                if (item.Type == type) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
                 var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
