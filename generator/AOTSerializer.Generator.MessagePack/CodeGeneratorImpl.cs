@@ -16,7 +16,8 @@ namespace AOTSerializer.Generator.MessagePack
 
         protected override string FormatterNamespacePrefix => "AOTSerializer.MessagePack.Formatters.";
 
-        public CodeGeneratorImpl(Compilation compilation) : base(compilation)
+        public CodeGeneratorImpl(Compilation compilation, Type[] additionalTypesToInclude = null)
+            : base(compilation, additionalTypesToInclude)
         {
             ConcreteFormatters = new HashSet<ITypeSymbol>();
             GenericFormatters = new Dictionary<ITypeSymbol, string>();

@@ -18,7 +18,8 @@ namespace AOTSerializer.Generator.Json
 
         protected override string FormatterNamespacePrefix => "AOTSerializer.Json.Formatters.";
 
-        public CodeGeneratorImpl(Compilation compilation) : base(compilation)
+        public CodeGeneratorImpl(Compilation compilation, Type[] additionalTypesToInclude = null)
+            : base(compilation, additionalTypesToInclude)
         {
             ConcreteFormatters = new HashSet<ITypeSymbol>();
             GenericFormatters = new Dictionary<ITypeSymbol, string>();

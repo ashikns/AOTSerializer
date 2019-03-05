@@ -69,7 +69,7 @@ namespace AOTSerializer.Generator
 
     public abstract class CodeGenerator
     {
-        private INamedTypeSymbol[] TargetTypes { get; }
+        private List<INamedTypeSymbol> TargetTypes { get; }
         private ReferenceSymbols TypeReferences { get; }
 
         // visitor workspace:
@@ -80,7 +80,7 @@ namespace AOTSerializer.Generator
 
         // --- 
 
-        protected CodeGenerator(Compilation compilation)
+        protected CodeGenerator(Compilation compilation, Type[] additionalTypesToInclude)
         {
             TypeReferences = new ReferenceSymbols(compilation);
 
@@ -90,7 +90,16 @@ namespace AOTSerializer.Generator
                     return x.DeclaredAccessibility == Accessibility.Public;
                 })
                 .Where(x => (x.TypeKind == TypeKind.Interface) || (x.TypeKind == TypeKind.Class) || (x.TypeKind == TypeKind.Struct))
-                .ToArray();
+                .ToList();
+
+            if (additionalTypesToInclude != null)
+            {
+                foreach (var type in additionalTypesToInclude)
+                {
+                    var namedType = compilation.GetTypeByMetadataName(type.FullName);
+                    if (namedType != null) { TargetTypes.Add(namedType); }
+                }
+            }
         }
 
         public string Generate()
@@ -155,10 +164,10 @@ namespace AOTSerializer.Generator
                 return;
             }
 
-            if (type.Locations[0].IsInMetadata)
-            {
-                return;
-            }
+            //if (type.Locations[0].IsInMetadata)
+            //{
+            //    return;
+            //}
 
             CollectObject(type);
             return;
