@@ -64,6 +64,7 @@ namespace AOTSerializer.Generator
         public string Namespace => NamespacePrefix + (Type.ContainingNamespace.IsGlobalNamespace ? null : Type.ContainingNamespace.ToDisplayString());
         public bool IsClass => !Type.IsValueType;
         public bool IsStruct => Type.IsValueType;
+        public bool IsGeneric => Type is INamedTypeSymbol namedType && namedType.IsGenericType;
         public int WriteCount => Members.Count(x => x.IsReadable);
 
         public string NamespacePrefix { get; set; }

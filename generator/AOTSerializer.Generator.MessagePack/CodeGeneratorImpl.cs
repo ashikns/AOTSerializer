@@ -54,6 +54,20 @@ namespace AOTSerializer.Generator.MessagePack
             return ConcreteFormatters.Contains(type);
         }
 
+        protected override bool HasGenericFormatter(INamedTypeSymbol genericType, out string genericFormatterName)
+        {
+            if (GenericFormatters.TryGetValue(genericType.ConstructUnboundGenericType(), out var formatterName))
+            {
+                genericFormatterName = $"{formatterName}<{string.Join(", ", genericType.TypeArguments.Select(t => t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))}>";
+                return true;
+            }
+            else
+            {
+                genericFormatterName = string.Empty;
+                return false;
+            }
+        }
+
         protected override string GetArrayFormatterName(IArrayTypeSymbol arrayType)
         {
             Type arrayFormatterType;
@@ -91,12 +105,6 @@ namespace AOTSerializer.Generator.MessagePack
             var nullableFormatterType = typeof(NullableFormatter<>);
             var formatterName = nullableFormatterType.FullName.Substring(0, nullableFormatterType.FullName.IndexOf('`'));
             return $"{formatterName}<{nullableType.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>";
-        }
-
-        protected override string GetGenericFormatterName(INamedTypeSymbol genericType)
-        {
-            var formatterName = GenericFormatters[genericType.ConstructUnboundGenericType()];
-            return $"{formatterName}<{string.Join(", ", genericType.TypeArguments.Select(t => t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))}>";
         }
 
         protected override MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type)

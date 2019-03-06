@@ -200,7 +200,14 @@ namespace AOTSerializer.Generator
             }
 
             // collection
-            CollectedGenericInfo.Add(new GenericSerializationInfo(type, GetGenericFormatterName(type)));
+            if (HasGenericFormatter(type, out var genericFormatterName))
+            {
+                CollectedGenericInfo.Add(new GenericSerializationInfo(type, genericFormatterName));
+            }
+            else
+            {
+                return;
+            }
 
             var genericType = type.ConstructUnboundGenericType();
 
@@ -489,10 +496,10 @@ namespace AOTSerializer.Generator
         }
 
         protected abstract bool HasBuiltinFormatter(ITypeSymbol type);
-        protected abstract MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type);
+        protected abstract bool HasGenericFormatter(INamedTypeSymbol genericType, out string genericFormatterName);
         protected abstract string GetArrayFormatterName(IArrayTypeSymbol arrayType);
         protected abstract string GetNullableFormatterName(INamedTypeSymbol nullableType);
-        protected abstract string GetGenericFormatterName(INamedTypeSymbol genericType);
+        protected abstract MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type);
 
         protected abstract string Generate(
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
