@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -86,6 +87,7 @@ namespace AOTSerializer.Json
             
             // special primitive
             {typeof(byte[]), ByteArrayFormatter.Default},
+            {typeof(Stream), StreamFormatter.Default},
             
             // otpmitized primitive array formatter
             {typeof(Int16[]), Int16ArrayFormatter.Default},

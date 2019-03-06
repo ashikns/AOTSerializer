@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -546,6 +547,25 @@ namespace AOTSerializer.MessagePack.Formatters
         {
             var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return new ValueTask<T>(v);
+        }
+    }
+
+    public sealed class StreamFormatter : FormatterBase<Stream>
+    {
+        public static readonly IFormatter<Stream> Default = new StreamFormatter();
+
+        public override void Serialize(ref byte[] bytes, ref int offset, Stream value, IResolver resolver)
+        {
+            var memoryStream = new MemoryStream();
+            value.CopyTo(memoryStream);
+            var buffer = memoryStream.ToArray();
+
+            MessagePackBinary.WriteBytes(ref bytes, ref offset, buffer);
+        }
+
+        public override Stream Deserialize(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            return new MemoryStream(MessagePackBinary.ReadBytes(bytes, ref offset));
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -651,6 +652,38 @@ namespace AOTSerializer.Json.Formatters
         {
             var v = resolver.GetFormatterWithVerify<T>().Deserialize(bytes, ref offset, resolver);
             return new ValueTask<T>(v);
+        }
+    }
+
+    public sealed class StreamFormatter : FormatterBase<Stream>
+    {
+        public static readonly IFormatter<Stream> Default = new StreamFormatter();
+
+        public override void Serialize(ref byte[] bytes, ref int offset, Stream value, IResolver resolver)
+        {
+            if (value == null) { JsonUtility.WriteNull(ref bytes, ref offset); return; }
+
+            if (value == null)
+            {
+                JsonUtility.WriteNull(ref bytes, ref offset);
+                return;
+            }
+
+            var memoryStream = new MemoryStream();
+            value.CopyTo(memoryStream);
+            var buffer = memoryStream.ToArray();
+
+            JsonUtility.WriteString(ref bytes, ref offset, Convert.ToBase64String(buffer, Base64FormattingOptions.None));
+        }
+
+        public override Stream Deserialize(byte[] bytes, ref int offset, IResolver resolver)
+        {
+            if (JsonUtility.ReadIsNull(bytes, ref offset))
+            {
+                return null;
+            }
+
+            return new MemoryStream(Convert.FromBase64String(JsonUtility.ReadString(bytes, ref offset)));
         }
     }
 }
