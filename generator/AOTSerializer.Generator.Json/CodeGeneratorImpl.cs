@@ -18,7 +18,7 @@ namespace AOTSerializer.Generator.Json
 
         protected override string FormatterNamespacePrefix => "AOTSerializer.Json.Formatters.";
 
-        public CodeGeneratorImpl(Compilation compilation, Type[] additionalTypesToInclude = null)
+        public CodeGeneratorImpl(Compilation compilation, IEnumerable<ITypeSymbol> additionalTypesToInclude = null)
             : base(compilation, additionalTypesToInclude)
         {
             ConcreteFormatters = new HashSet<ITypeSymbol>();
@@ -27,7 +27,7 @@ namespace AOTSerializer.Generator.Json
 
             foreach (var item in FormatterMap.ConcreteFormatterMap)
             {
-                if (GetTypeSymbolForType(item.Key, compilation) is var type && type != null)
+                if (RoslynExtensions.GetTypeSymbolForType(item.Key, compilation) is var type && type != null)
                 {
                     ConcreteFormatters.Add(type);
                 }
@@ -35,7 +35,7 @@ namespace AOTSerializer.Generator.Json
 
             foreach (var item in FormatterMap.GenericFormatterMap)
             {
-                if (GetTypeSymbolForType(item.Key, compilation) is INamedTypeSymbol type && type != null)
+                if (RoslynExtensions.GetTypeSymbolForType(item.Key, compilation) is INamedTypeSymbol type && type != null)
                 {
                     var formatterName = item.Value.FullName;
                     GenericFormatters.Add(type.ConstructUnboundGenericType(), formatterName.Substring(0, formatterName.IndexOf('`')));
@@ -44,7 +44,7 @@ namespace AOTSerializer.Generator.Json
 
             foreach (var func in FormatterMap.PrimitiveFuncs)
             {
-                if (GetTypeSymbolForType(func.Key, compilation) is var primitiveType && primitiveType != null)
+                if (RoslynExtensions.GetTypeSymbolForType(func.Key, compilation) is var primitiveType && primitiveType != null)
                 {
                     PrimitiveFuncs.Add(primitiveType, func.Value);
                 }

@@ -16,7 +16,7 @@ namespace AOTSerializer.Generator.MessagePack
 
         protected override string FormatterNamespacePrefix => "AOTSerializer.MessagePack.Formatters.";
 
-        public CodeGeneratorImpl(Compilation compilation, Type[] additionalTypesToInclude = null)
+        public CodeGeneratorImpl(Compilation compilation, IEnumerable<ITypeSymbol> additionalTypesToInclude = null)
             : base(compilation, additionalTypesToInclude)
         {
             ConcreteFormatters = new HashSet<ITypeSymbol>();
@@ -25,7 +25,7 @@ namespace AOTSerializer.Generator.MessagePack
 
             foreach (var item in FormatterMap.ConcreteFormatterMap)
             {
-                if (GetTypeSymbolForType(item.Key, compilation) is var type && type != null)
+                if (RoslynExtensions.GetTypeSymbolForType(item.Key, compilation) is var type && type != null)
                 {
                     ConcreteFormatters.Add(type);
                 }
@@ -33,7 +33,7 @@ namespace AOTSerializer.Generator.MessagePack
 
             foreach (var item in FormatterMap.GenericFormatterMap)
             {
-                if (GetTypeSymbolForType(item.Key, compilation) is INamedTypeSymbol type && type != null)
+                if (RoslynExtensions.GetTypeSymbolForType(item.Key, compilation) is INamedTypeSymbol type && type != null)
                 {
                     var formatterName = item.Value.FullName;
                     GenericFormatters.Add(type.ConstructUnboundGenericType(), formatterName.Substring(0, formatterName.IndexOf('`')));
@@ -42,7 +42,7 @@ namespace AOTSerializer.Generator.MessagePack
 
             foreach (var func in FormatterMap.PrimitiveFuncs)
             {
-                if (GetTypeSymbolForType(func.Key, compilation) is var primitiveType && primitiveType != null)
+                if (RoslynExtensions.GetTypeSymbolForType(func.Key, compilation) is var primitiveType && primitiveType != null)
                 {
                     PrimitiveFuncs.Add(primitiveType, func.Value);
                 }

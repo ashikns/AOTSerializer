@@ -69,7 +69,7 @@ namespace AOTSerializer.Generator
 
     public abstract class CodeGenerator
     {
-        private List<INamedTypeSymbol> TargetTypes { get; }
+        private List<ITypeSymbol> TargetTypes { get; }
         private ReferenceSymbols TypeReferences { get; }
 
         // visitor workspace:
@@ -80,11 +80,11 @@ namespace AOTSerializer.Generator
 
         // --- 
 
-        protected CodeGenerator(Compilation compilation, Type[] additionalTypesToInclude)
+        protected CodeGenerator(Compilation compilation, IEnumerable<ITypeSymbol> additionalTypesToInclude)
         {
             TypeReferences = new ReferenceSymbols(compilation);
 
-            TargetTypes = compilation.GetNamedTypeSymbols()
+            var compilationTypes = compilation.GetNamedTypeSymbols()
                 .Where(x =>
                 {
                     return x.DeclaredAccessibility == Accessibility.Public;
@@ -92,14 +92,7 @@ namespace AOTSerializer.Generator
                 .Where(x => (x.TypeKind == TypeKind.Interface) || (x.TypeKind == TypeKind.Class) || (x.TypeKind == TypeKind.Struct))
                 .ToList();
 
-            if (additionalTypesToInclude != null)
-            {
-                foreach (var type in additionalTypesToInclude)
-                {
-                    var namedType = compilation.GetTypeByMetadataName(type.FullName);
-                    if (namedType != null) { TargetTypes.Add(namedType); }
-                }
-            }
+            TargetTypes = compilationTypes.Concat(additionalTypesToInclude ?? new ITypeSymbol[0]).ToList();
         }
 
         public string Generate()
@@ -436,63 +429,6 @@ namespace AOTSerializer.Generator
             } while (symbol != null);
 
             return true;
-        }
-
-        protected static ITypeSymbol GetTypeSymbolForType(Type type, Compilation compilation)
-        {
-            if (type.IsArray && compilation.GetTypeByMetadataName(type.GetElementType().FullName) is var arrayElementType && arrayElementType != null)
-            {
-                var allSymbols = compilation.GetSymbolsWithName((_) => true);
-                foreach (var symbol in allSymbols)
-                {
-                    switch (symbol.Kind)
-                    {
-                        case SymbolKind.ArrayType:
-                            var currentArrayType = (IArrayTypeSymbol)symbol;
-                            if (currentArrayType.ElementType == arrayElementType
-                                && currentArrayType.Rank == type.GetArrayRank())
-                            {
-                                return currentArrayType;
-                            }
-                            break;
-                        case SymbolKind.Field:
-                            var fieldType = ((IFieldSymbol)symbol).Type;
-                            if (fieldType.Kind == SymbolKind.ArrayType
-                                && ((IArrayTypeSymbol)fieldType).ElementType == arrayElementType
-                                && ((IArrayTypeSymbol)fieldType).Rank == type.GetArrayRank())
-                            {
-                                return fieldType;
-                            }
-                            break;
-                        case SymbolKind.Property:
-                            var propertyType = ((IPropertySymbol)symbol).Type;
-                            if (propertyType.Kind == SymbolKind.ArrayType
-                                && ((IArrayTypeSymbol)propertyType).ElementType == arrayElementType
-                                && ((IArrayTypeSymbol)propertyType).Rank == type.GetArrayRank())
-                            {
-                                return propertyType;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (!type.IsConstructedGenericType)
-            {
-                return compilation.GetTypeByMetadataName(type.FullName);
-            }
-
-            // get all typeInfo's for the Type arguments 
-            var typeArgumentsTypeInfos = type.GenericTypeArguments.Select(a => GetTypeSymbolForType(a, compilation)).ToArray();
-
-            var openType = type.GetGenericTypeDefinition();
-            var typeSymbol = compilation.GetTypeByMetadataName(openType.FullName);
-
-            return typeSymbol != null && typeArgumentsTypeInfos.All(t => t != null)
-                ? typeSymbol.Construct(typeArgumentsTypeInfos)
-                : null;
         }
 
         protected abstract bool HasBuiltinFormatter(ITypeSymbol type);
