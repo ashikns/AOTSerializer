@@ -1,0 +1,14 @@
+{
+    "name": "AOTSerializer.Json",
+    "references": [
+        "AOTSerializer.Common"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
