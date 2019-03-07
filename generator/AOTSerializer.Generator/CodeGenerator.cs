@@ -40,12 +40,12 @@ namespace AOTSerializer.Generator
                 throw new InvalidOperationException("failed to get metadata");
             }
 
-            JsonObject = typeof(Newtonsoft.Json.JsonObjectAttribute).FullName;
+            JsonObject = nameof(Newtonsoft.Json.JsonObjectAttribute).Substring(0, nameof(Newtonsoft.Json.JsonObjectAttribute).IndexOf("Attribute"));
             JsonObjectSerializationModeKey = nameof(Newtonsoft.Json.MemberSerialization);
             JsonObjectSerializationModeValueOptIn = nameof(Newtonsoft.Json.MemberSerialization.OptIn);
-            JsonProperty = typeof(Newtonsoft.Json.JsonPropertyAttribute).FullName;
+            JsonProperty = nameof(Newtonsoft.Json.JsonPropertyAttribute).Substring(0, nameof(Newtonsoft.Json.JsonPropertyAttribute).IndexOf("Attribute")); ;
             JsonPropertyName = nameof(Newtonsoft.Json.JsonPropertyAttribute.PropertyName);
-            JsonExtensionData = typeof(Newtonsoft.Json.JsonExtensionDataAttribute).FullName;
+            JsonExtensionData = nameof(Newtonsoft.Json.JsonExtensionDataAttribute).Substring(0, nameof(Newtonsoft.Json.JsonExtensionDataAttribute).IndexOf("Attribute")); ;
             JsonExtensionReadable = nameof(Newtonsoft.Json.JsonExtensionDataAttribute.ReadData);
             JsonExtensionWritable = nameof(Newtonsoft.Json.JsonExtensionDataAttribute.WriteData);
 
@@ -218,7 +218,7 @@ namespace AOTSerializer.Generator
             var isClass = !type.IsValueType;
 
             var dataContractAttribute = type.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataContractAttribute);
-            var jsonObjectAttribute = type.GetAttributes().FindAttribute(TypeReferences.JsonObject);
+            var jsonObjectAttribute = type.GetAttributes().FindAttributeShortName(TypeReferences.JsonObject);
             var isMarkedOptIn = dataContractAttribute != null ||
                 jsonObjectAttribute?.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonObjectSerializationModeKey) == TypeReferences.JsonObjectSerializationModeValueOptIn;
 
@@ -233,8 +233,8 @@ namespace AOTSerializer.Generator
                 if (item.Type == type) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
-                var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
-                var jsonExtensionAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonExtensionData);
+                var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
+                var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
 
                 if (isMarkedOptIn && dataMemberAttrib == null && jsonPropertyAttrib == null && jsonExtensionAttrib == null) continue;
 
@@ -289,8 +289,8 @@ namespace AOTSerializer.Generator
                 if (item.Type == type) { continue; }
 
                 var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
-                var jsonPropertyAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonProperty);
-                var jsonExtensionAttrib = item.GetAttributes().FindAttribute(TypeReferences.JsonExtensionData);
+                var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
+                var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
 
                 if (isMarkedOptIn && dataMemberAttrib == null && jsonPropertyAttrib == null && jsonExtensionAttrib == null) continue;
 
