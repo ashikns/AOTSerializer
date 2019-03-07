@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -123,10 +122,10 @@ namespace AOTSerializer.Json
             { typeof(ArraySegment<byte>), ByteArraySegmentFormatter.Default },
             { typeof(ArraySegment<byte>?),new StaticNullableFormatter<ArraySegment<byte>>(ByteArraySegmentFormatter.Default) },
 
-            {typeof(BigInteger), BigIntegerFormatter.Default},
-            {typeof(BigInteger?), new StaticNullableFormatter<BigInteger>(BigIntegerFormatter.Default)},
-            {typeof(Complex), ComplexFormatter.Default},
-            {typeof(Complex?), new StaticNullableFormatter<Complex>(ComplexFormatter.Default)},
+            {typeof(System.Numerics.BigInteger), BigIntegerFormatter.Default},
+            {typeof(System.Numerics.BigInteger?), new StaticNullableFormatter<System.Numerics.BigInteger>(BigIntegerFormatter.Default)},
+            {typeof(System.Numerics.Complex), ComplexFormatter.Default},
+            {typeof(System.Numerics.Complex?), new StaticNullableFormatter<System.Numerics.Complex>(ComplexFormatter.Default)},
             {typeof(Task), TaskUnitFormatter.Default},
 
             // Unity
