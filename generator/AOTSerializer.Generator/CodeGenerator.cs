@@ -249,9 +249,9 @@ namespace AOTSerializer.Generator
                     jsonExtensionAttributeEncountered = true;
                 }
 
-                var name = item.Name;
-                if (dataMemberAttrib != null) { name = dataMemberAttrib.GetSingleNamedArgumentValueFromSyntaxTree("Name"); }
-                else if (jsonPropertyAttrib != null) { name = jsonPropertyAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonPropertyName); }
+                var serializationName = item.Name;
+                if (dataMemberAttrib != null) { serializationName = dataMemberAttrib.GetSingleNamedArgumentValueFromSyntaxTree("Name"); }
+                else if (jsonPropertyAttrib != null) { serializationName = jsonPropertyAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonPropertyName); }
 
                 bool isReadable, isWritable;
                 if (jsonExtensionAttrib == null)
@@ -272,10 +272,16 @@ namespace AOTSerializer.Generator
                     continue;
                 }
 
-                var member = MakeMemberSerializationInfo(item, item.Type);
-                member.IsReadable = isReadable;
-                member.IsWritable = isWritable;
-                member.IsExtensionData = jsonExtensionAttrib != null;
+                var member = new MemberSerializationInfo(item.Type)
+                {
+                    Name = item.Name,
+                    SerializationName = serializationName,
+                    IsReadable = isReadable,
+                    IsWritable = isWritable,
+                    IsExtensionData = jsonExtensionAttrib != null,
+                    SerializeMethodString = GetSerializeMethodString(item, item.Type),
+                    DeserializeMethodString = GetDeserializeMethodString(item, item.Type),
+                };
 
                 if (!member.IsReadable && !member.IsWritable) { continue; }
                 stringMembers.Add(member.StringKey, member);
@@ -305,9 +311,9 @@ namespace AOTSerializer.Generator
                     jsonExtensionAttributeEncountered = true;
                 }
 
-                var name = item.Name;
-                if (dataMemberAttrib != null) { name = dataMemberAttrib.GetSingleNamedArgumentValueFromSyntaxTree("Name"); }
-                else if (jsonPropertyAttrib != null) { name = jsonPropertyAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonPropertyName); }
+                var serializationName = item.Name;
+                if (dataMemberAttrib != null) { serializationName = dataMemberAttrib.GetSingleNamedArgumentValueFromSyntaxTree("Name"); }
+                else if (jsonPropertyAttrib != null) { serializationName = jsonPropertyAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonPropertyName); }
 
                 bool isReadable, isWritable;
                 if (jsonExtensionAttrib == null)
@@ -322,10 +328,16 @@ namespace AOTSerializer.Generator
                     isWritable = bool.Parse(jsonExtensionAttrib.GetSingleNamedArgumentValueFromSyntaxTree(TypeReferences.JsonExtensionReadable) ?? "true");
                 }
 
-                var member = MakeMemberSerializationInfo(item, item.Type);
-                member.IsReadable = isReadable;
-                member.IsWritable = isWritable;
-                member.IsExtensionData = jsonExtensionAttrib != null;
+                var member = new MemberSerializationInfo(item.Type)
+                {
+                    Name = item.Name,
+                    SerializationName = serializationName,
+                    IsReadable = isReadable,
+                    IsWritable = isWritable,
+                    IsExtensionData = jsonExtensionAttrib != null,
+                    SerializeMethodString = GetSerializeMethodString(item, item.Type),
+                    DeserializeMethodString = GetDeserializeMethodString(item, item.Type),
+                };
 
                 if (!member.IsReadable && !member.IsWritable) { continue; }
                 stringMembers.Add(member.StringKey, member);
@@ -435,7 +447,8 @@ namespace AOTSerializer.Generator
         protected abstract bool HasGenericFormatter(INamedTypeSymbol genericType, out string genericFormatterName);
         protected abstract string GetArrayFormatterName(IArrayTypeSymbol arrayType);
         protected abstract string GetNullableFormatterName(INamedTypeSymbol nullableType);
-        protected abstract MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type);
+        protected abstract string GetSerializeMethodString(ISymbol symbol, ITypeSymbol type);
+        protected abstract string GetDeserializeMethodString(ISymbol symbol, ITypeSymbol type);
 
         protected abstract string Generate(
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,

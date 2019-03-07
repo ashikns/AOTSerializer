@@ -24,7 +24,6 @@ namespace AOTSerializer.Generator
     public class MemberSerializationInfo
     {
         public ITypeSymbol Type { get; }
-        public string Name { get; }
         public bool IsProperty { get; }
         public bool IsField { get; }
         public string TypeArguments { get; }
@@ -33,6 +32,8 @@ namespace AOTSerializer.Generator
         public string ShortTypeName => Type.ToDisplayString(DisplayFormat.BinaryWriteFormat);
         public string FullTypeName => Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
+        public string Name { get; set; }
+        public string SerializationName { get; set; }
         public bool IsWritable { get; set; }
         public bool IsReadable { get; set; }
         public bool IsExtensionData { get; set; }
@@ -40,9 +41,8 @@ namespace AOTSerializer.Generator
         public string SerializeMethodString { get; set; }
         public string DeserializeMethodString { get; set; }
 
-        public MemberSerializationInfo(ISymbol symbol, ITypeSymbol type)
+        public MemberSerializationInfo(ITypeSymbol type)
         {
-            Name = symbol.Name;
             Type = type;
             IsProperty = true;
             IsField = false;

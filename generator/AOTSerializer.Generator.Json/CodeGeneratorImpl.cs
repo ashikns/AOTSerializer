@@ -109,19 +109,18 @@ namespace AOTSerializer.Generator.Json
             return $"{formatterName}<{nullableType.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>";
         }
 
-        protected override MemberSerializationInfo MakeMemberSerializationInfo(ISymbol symbol, ITypeSymbol type)
+        protected override string GetSerializeMethodString(ISymbol symbol, ITypeSymbol type)
         {
-            var info = new MemberSerializationInfo(symbol, type);
+            return PrimitiveFuncs.ContainsKey(type)
+            ? $"{nameof(JsonUtility)}.{PrimitiveFuncs[type].WriteFunc}(ref bytes, ref offset, value.{symbol.Name})"
+            : $"resolver.{nameof(FormatterResolverExtensions.GetFormatterWithVerify)}<{type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>().Serialize(ref bytes, ref offset, value.{symbol.Name}, resolver)";
+        }
 
-            info.SerializeMethodString = PrimitiveFuncs.ContainsKey(type)
-            ? $"{nameof(JsonUtility)}.{PrimitiveFuncs[type].WriteFunc}(ref bytes, ref offset, value.{info.Name})"
-            : $"resolver.{nameof(FormatterResolverExtensions.GetFormatterWithVerify)}<{type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>().Serialize(ref bytes, ref offset, value.{info.Name}, resolver)";
-
-            info.DeserializeMethodString = PrimitiveFuncs.ContainsKey(type)
+        protected override string GetDeserializeMethodString(ISymbol symbol, ITypeSymbol type)
+        {
+            return PrimitiveFuncs.ContainsKey(type)
             ? $"{nameof(JsonUtility)}.{PrimitiveFuncs[type].ReadFunc}(bytes, ref offset)"
             : $"resolver.{nameof(FormatterResolverExtensions.GetFormatterWithVerify)}<{type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>().Deserialize(bytes, ref offset, resolver)";
-
-            return info;
         }
 
         protected override string Generate(

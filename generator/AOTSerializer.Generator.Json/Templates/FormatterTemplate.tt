@@ -28,7 +28,7 @@ namespace <#= Namespace #>
             this.____keyMapping = new AutomataDictionary()
             {
 <# var index = 0; foreach(var x in objInfo.Members) { #>
-                { System.Text.Encoding.UTF8.GetString(JsonUtility.GetEncodedPropertyNameWithoutQuotation("<#= x.Name #>")), <#= index++ #> },
+                { System.Text.Encoding.UTF8.GetString(JsonUtility.GetEncodedPropertyNameWithoutQuotation("<#= x.SerializationName #>")), <#= index++ #> },
 <# } #>
             };
 
@@ -36,9 +36,9 @@ namespace <#= Namespace #>
             {
 <# index = 0; foreach(var x in objInfo.Members.Where(x => x.IsReadable)) { #>
 <# if(index++ == 0) { #>
-                JsonUtility.GetEncodedPropertyNameWithBeginObject("<#= x.Name #>").ToArray(),
+                JsonUtility.GetEncodedPropertyNameWithBeginObject("<#= x.SerializationName #>").ToArray(),
 <# } else { #>
-                JsonUtility.GetEncodedPropertyNameWithPrefixValueSeparator("<#= x.Name #>").ToArray(),
+                JsonUtility.GetEncodedPropertyNameWithPrefixValueSeparator("<#= x.SerializationName #>").ToArray(),
 <# }} #>
             };
         }
