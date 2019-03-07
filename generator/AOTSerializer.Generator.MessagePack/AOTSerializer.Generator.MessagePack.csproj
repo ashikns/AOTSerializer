@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,6 +7,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AOTSerializer.MessagePack\AOTSerializer.MessagePack.csproj" />
     <ProjectReference Include="..\AOTSerializer.Generator\AOTSerializer.Generator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="**/*.meta" />
+    <None Remove="**/*.asmdef" />
   </ItemGroup>
 
 </Project>

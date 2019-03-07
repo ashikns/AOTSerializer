@@ -9,6 +9,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="**/*.meta" />
+    <None Remove="**/*.asmdef" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Internal\DoubleConversion\" />
     <Folder Include="Resolvers\" />
   </ItemGroup>
