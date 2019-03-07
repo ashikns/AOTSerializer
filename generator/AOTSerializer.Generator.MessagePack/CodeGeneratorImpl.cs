@@ -122,6 +122,7 @@ namespace AOTSerializer.Generator.MessagePack
         }
 
         protected override string Generate(
+            string resolverName,
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
             IEnumerable<GenericSerializationInfo> genericSerializationInfos,
             IEnumerable<EnumSerializationInfo> enumSerializationInfos)

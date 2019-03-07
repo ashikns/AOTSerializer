@@ -124,6 +124,7 @@ namespace AOTSerializer.Generator.Json
         }
 
         protected override string Generate(
+            string resolverName,
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
             IEnumerable<GenericSerializationInfo> genericSerializationInfos,
             IEnumerable<EnumSerializationInfo> enumSerializationInfos)
@@ -149,7 +150,7 @@ namespace AOTSerializer.Generator.Json
             var resolverTemplate = new ResolverTemplate()
             {
                 Namespace = "AOTSerializer.Json.Resolvers",
-                ResolverName = "GeneratedResolver",
+                ResolverName = resolverName,
                 RegisterInfos = genericSerializationInfos.Cast<IResolverRegisterInfo>().Concat(enumSerializationInfos).Concat(objectSerializationInfos).ToArray()
             };
 

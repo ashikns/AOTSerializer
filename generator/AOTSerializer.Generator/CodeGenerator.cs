@@ -95,10 +95,10 @@ namespace AOTSerializer.Generator
             TargetTypes = compilationTypes.Concat(additionalTypesToInclude ?? new ITypeSymbol[0]).ToList();
         }
 
-        public string Generate()
+        public string Generate(string resolverName)
         {
             Collect();
-            return Generate(CollectedObjectInfo, CollectedGenericInfo.Distinct(), CollectedEnumInfo);
+            return Generate(resolverName, CollectedObjectInfo, CollectedGenericInfo.Distinct(), CollectedEnumInfo);
         }
 
         private void Collect()
@@ -451,6 +451,7 @@ namespace AOTSerializer.Generator
         protected abstract string GetDeserializeMethodString(ISymbol symbol, ITypeSymbol type);
 
         protected abstract string Generate(
+            string resolverName,
             IEnumerable<ObjectSerializationInfo> objectSerializationInfos,
             IEnumerable<GenericSerializationInfo> genericSerializationInfos,
             IEnumerable<EnumSerializationInfo> enumSerializationInfos);

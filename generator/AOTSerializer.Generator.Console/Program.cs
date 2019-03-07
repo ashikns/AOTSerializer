@@ -8,7 +8,7 @@ namespace AOTSerializer.Generator.Console
     {
         private static void Main(string[] args)
         {
-            var additionalTypesToInclude = new Type[0];
+            var name = "MSGraph";
 
             var compilation = RoslynExtensions.GetCompilation(
                 @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\Microsoft.Graph.sln",
@@ -23,6 +23,10 @@ namespace AOTSerializer.Generator.Console
                 (project, index, count) => { System.Console.WriteLine($"Compiled {project} - {index} of {count}"); }
                 );
 
+            var additionalTypesToInclude = new Type[0];
+
+
+            //var name = "HoloBeam";
 
             //var compilation = RoslynExtensions.GetCompilation(
             //    @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\HoloBeam.sln",
@@ -60,9 +64,9 @@ namespace AOTSerializer.Generator.Console
             }
 
             var codeGenerator = new Json.CodeGeneratorImpl(targetCompilation, additionalNamedTypes);
-            var generated = codeGenerator.Generate();
+            var generated = codeGenerator.Generate($"{name}Resolver");
 
-            System.IO.File.WriteAllText(@"Generated.Json.cs", generated);
+            System.IO.File.WriteAllText($@"{name}.Generated.Json.cs", generated);
 
             System.Console.WriteLine("Done!!");
         }
