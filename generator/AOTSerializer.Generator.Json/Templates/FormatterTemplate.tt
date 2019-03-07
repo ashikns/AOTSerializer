@@ -102,11 +102,11 @@ namespace <#= Namespace #>
 <# } #>
 <# if (extensionMember == null) { #>
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
 <# } else { #>
                     default:
-                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out _);
+                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset);
                         var unknownDataStr = System.Text.Encoding.UTF8.GetString(unknownData.Array, unknownData.Offset, unknownData.Count);
                         unknownDataStr = unknownDataStr.Trim();
                         if (unknownDataStr.StartsWith("\"") && unknownDataStr.EndsWith("\"")) { unknownDataStr = unknownDataStr.Substring(1, unknownDataStr.Length - 2); }
@@ -133,11 +133,11 @@ namespace <#= Namespace #>
 <# } #>
 <# if (extensionMember == null) { #>
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
 <# } else { #>
                     default:
-                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out _);
+                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset);
                         var unknownDataStr = System.Text.Encoding.UTF8.GetString(unknownData.Array, unknownData.Offset, unknownData.Count);
                         unknownDataStr = unknownDataStr.Trim();
                         if (unknownDataStr.StartsWith("\"") && unknownDataStr.EndsWith("\"")) { unknownDataStr = unknownDataStr.Substring(1, unknownDataStr.Length - 2); }

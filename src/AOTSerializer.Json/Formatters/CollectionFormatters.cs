@@ -450,7 +450,7 @@ namespace AOTSerializer.Json.Formatters
                         resultValue = resolver.GetFormatterWithVerify<IEnumerable<TElement>>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 

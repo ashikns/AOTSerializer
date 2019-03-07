@@ -52,7 +52,9 @@ namespace AOTSerializer.Json.Formatters
         public <#= t.Name #> DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out _);
+            var value = NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -102,7 +104,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out _);
+            var value = NumberConverter.Read<#= t.Name #>(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 

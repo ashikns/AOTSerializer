@@ -191,7 +191,7 @@ namespace AOTSerializer.Json.Formatters
                         item1 = resolver.GetFormatterWithVerify<T1>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -245,7 +245,7 @@ namespace AOTSerializer.Json.Formatters
                         item2 = resolver.GetFormatterWithVerify<T2>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -305,7 +305,7 @@ namespace AOTSerializer.Json.Formatters
                         item3 = resolver.GetFormatterWithVerify<T3>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -371,7 +371,7 @@ namespace AOTSerializer.Json.Formatters
                         item4 = resolver.GetFormatterWithVerify<T4>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -443,7 +443,7 @@ namespace AOTSerializer.Json.Formatters
                         item5 = resolver.GetFormatterWithVerify<T5>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -521,7 +521,7 @@ namespace AOTSerializer.Json.Formatters
                         item6 = resolver.GetFormatterWithVerify<T6>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -605,7 +605,7 @@ namespace AOTSerializer.Json.Formatters
                         item7 = resolver.GetFormatterWithVerify<T7>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 
@@ -695,7 +695,7 @@ namespace AOTSerializer.Json.Formatters
                         item8 = resolver.GetFormatterWithVerify<TRest>().Deserialize(bytes, ref offset, resolver);
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
 

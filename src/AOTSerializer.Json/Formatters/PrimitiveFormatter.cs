@@ -29,7 +29,9 @@ namespace AOTSerializer.Json.Formatters
         public Int16 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt16(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt16(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -79,7 +81,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt16(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt16(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -164,7 +168,9 @@ namespace AOTSerializer.Json.Formatters
         public Int32 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt32(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt32(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -214,7 +220,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt32(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt32(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -299,7 +307,9 @@ namespace AOTSerializer.Json.Formatters
         public Int64 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt64(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt64(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -349,7 +359,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadInt64(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadInt64(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -434,7 +446,9 @@ namespace AOTSerializer.Json.Formatters
         public UInt16 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt16(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt16(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -484,7 +498,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt16(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt16(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -569,7 +585,9 @@ namespace AOTSerializer.Json.Formatters
         public UInt32 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt32(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt32(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -619,7 +637,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt32(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt32(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -704,7 +724,9 @@ namespace AOTSerializer.Json.Formatters
         public UInt64 DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt64(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt64(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -754,7 +776,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadUInt64(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadUInt64(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -839,7 +863,9 @@ namespace AOTSerializer.Json.Formatters
         public Single DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadSingle(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadSingle(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -889,7 +915,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadSingle(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadSingle(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -974,7 +1002,9 @@ namespace AOTSerializer.Json.Formatters
         public Double DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadDouble(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadDouble(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1024,7 +1054,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadDouble(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadDouble(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1109,7 +1141,9 @@ namespace AOTSerializer.Json.Formatters
         public Boolean DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadBoolean(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadBoolean(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1159,7 +1193,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadBoolean(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadBoolean(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1244,7 +1280,9 @@ namespace AOTSerializer.Json.Formatters
         public Byte DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadByte(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadByte(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1294,7 +1332,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadByte(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadByte(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1323,7 +1363,9 @@ namespace AOTSerializer.Json.Formatters
         public SByte DeserializeFromPropertyName(byte[] bytes, ref int offset, IResolver resolver)
         {
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadSByte(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadSByte(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 
@@ -1373,7 +1415,9 @@ namespace AOTSerializer.Json.Formatters
             if (JsonUtility.ReadIsNull(bytes, ref offset)) { return null; }
 
             var key = JsonUtility.ReadStringSegmentRaw(bytes, ref offset);
-            return NumberConverter.ReadSByte(key.Array, key.Offset, out _);
+            var value = NumberConverter.ReadSByte(key.Array, key.Offset, out var readCount);
+            offset += readCount;
+            return value;
         }
     }
 

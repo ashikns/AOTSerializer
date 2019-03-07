@@ -357,7 +357,7 @@ namespace AOTSerializer.Generator.Json.Templates
             #line default
             #line hidden
             this.Write("                    default:\r\n                        JsonUtility.ReadNextBlock(b" +
-                    "ytes, ref offset, out _);\r\n                        break;\r\n");
+                    "ytes, ref offset);\r\n                        break;\r\n");
             
             #line 107 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } else { 
@@ -365,7 +365,7 @@ namespace AOTSerializer.Generator.Json.Templates
             #line default
             #line hidden
             this.Write(@"                    default:
-                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out _);
+                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset);
                         var unknownDataStr = System.Text.Encoding.UTF8.GetString(unknownData.Array, unknownData.Offset, unknownData.Count);
                         unknownDataStr = unknownDataStr.Trim();
                         if (unknownDataStr.StartsWith(""\"""") && unknownDataStr.EndsWith(""\"""")) { unknownDataStr = unknownDataStr.Substring(1, unknownDataStr.Length - 2); }
@@ -439,7 +439,7 @@ namespace AOTSerializer.Generator.Json.Templates
             #line default
             #line hidden
             this.Write("                    default:\r\n                        JsonUtility.ReadNextBlock(b" +
-                    "ytes, ref offset, out _);\r\n                        break;\r\n");
+                    "ytes, ref offset);\r\n                        break;\r\n");
             
             #line 138 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } else { 
@@ -447,7 +447,7 @@ namespace AOTSerializer.Generator.Json.Templates
             #line default
             #line hidden
             this.Write(@"                    default:
-                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset, out _);
+                        var unknownData = JsonUtility.ReadNextBlockSegment(bytes, ref offset);
                         var unknownDataStr = System.Text.Encoding.UTF8.GetString(unknownData.Array, unknownData.Offset, unknownData.Count);
                         unknownDataStr = unknownDataStr.Trim();
                         if (unknownDataStr.StartsWith(""\"""") && unknownDataStr.EndsWith(""\"""")) { unknownDataStr = unknownDataStr.Substring(1, unknownDataStr.Length - 2); }

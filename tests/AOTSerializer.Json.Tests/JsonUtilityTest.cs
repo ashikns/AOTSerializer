@@ -64,7 +64,7 @@ namespace AOTSerializer.Json.Tests
             var bin = Serializer.Serialize(array);
 
             int offset = 0;
-            JsonUtility.ReadNextBlock(bin, ref offset, out _);
+            JsonUtility.ReadNextBlock(bin, ref offset);
 
             // ok, can read.
             offset.Is(bin.Length);

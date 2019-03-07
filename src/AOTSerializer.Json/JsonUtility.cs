@@ -486,10 +486,9 @@ namespace AOTSerializer.Json
             ReadNextCore(token, bytes, ref offset);
         }
 
-        public static void ReadNextBlock(byte[] bytes, ref int offset, out int numElements)
+        public static void ReadNextBlock(byte[] bytes, ref int offset)
         {
             var stack = 0;
-            numElements = 0;
 
         AGAIN:
             var token = GetCurrentJsonToken(bytes, ref offset);
@@ -497,7 +496,6 @@ namespace AOTSerializer.Json
             {
                 case JsonToken.BeginObject:
                 case JsonToken.BeginArray:
-                    if (stack == 1) { numElements++; }
                     offset++;
                     stack++;
                     goto AGAIN;
@@ -513,11 +511,10 @@ namespace AOTSerializer.Json
                 case JsonToken.String:
                 case JsonToken.Number:
                 case JsonToken.NameSeparator:
-                    if (stack == 1) { numElements++; }
-                    goto case JsonToken.ValueSeparator;
                 case JsonToken.ValueSeparator:
                     ReadNextCore(token, bytes, ref offset);
-                    goto AGAIN;
+                    if (stack != 0) { goto AGAIN; }
+                    break;
                 case JsonToken.None:
                 default:
                     break;
@@ -527,10 +524,10 @@ namespace AOTSerializer.Json
         /// <summary>
         /// Returned ArraySegment has the original array as underlying Array. Don't modify!!
         /// </summary>
-        public static ArraySegment<byte> ReadNextBlockSegment(byte[] bytes, ref int offset, out int numElements)
+        public static ArraySegment<byte> ReadNextBlockSegment(byte[] bytes, ref int offset)
         {
             var startOffset = offset;
-            ReadNextBlock(bytes, ref offset, out numElements);
+            ReadNextBlock(bytes, ref offset);
             return new ArraySegment<byte>(bytes, startOffset, offset - startOffset);
         }
 

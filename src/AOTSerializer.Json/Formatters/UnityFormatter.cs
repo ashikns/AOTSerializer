@@ -133,7 +133,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __y__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -156,7 +156,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __y__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -242,7 +242,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __z__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -269,7 +269,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __z__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -366,7 +366,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __w__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -397,7 +397,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __w__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -505,7 +505,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __w__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -540,7 +540,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __w__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -639,7 +639,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __a__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -670,7 +670,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __a__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -778,7 +778,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __max__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -813,7 +813,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __max__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1002,7 +1002,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __yMax__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1069,7 +1069,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __yMax__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1216,7 +1216,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __tangentMode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1263,7 +1263,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __tangentMode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1360,7 +1360,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __postWrapMode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1387,7 +1387,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __postWrapMode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1489,7 +1489,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __bottom__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1520,7 +1520,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __bottom__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1598,7 +1598,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __time__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1621,7 +1621,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __time__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1697,7 +1697,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __time__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1720,7 +1720,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __time__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1811,7 +1811,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __mode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -1838,7 +1838,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __mode__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2055,7 +2055,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __m33__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2134,7 +2134,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __m33__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2244,7 +2244,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __a__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2275,7 +2275,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __a__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2343,7 +2343,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __value__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
@@ -2362,7 +2362,7 @@ namespace AOTSerializer.Json.Formatters.UnityEngine
                         __value__b__ = true;
                         break;
                     default:
-                        JsonUtility.ReadNextBlock(bytes, ref offset, out _);
+                        JsonUtility.ReadNextBlock(bytes, ref offset);
                         break;
                 }
             }
