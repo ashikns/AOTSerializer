@@ -1,1 +1,3 @@
 # AOTSerializer
+
+AOTSerializer is a json serializer for unity. The code is a very stripped down refactor of [Utf8Json](https://github.com/neuecc/Utf8Json) and [MessagePack-CSharp](https://github.com/neuecc/MessagePack-CSharp). Primary goal is to provide a consistent behavior in Editor and IL2CPP. Due to this it only supports pre generated converters, i.e. you can't serialize a class unless you generate a formatter for it using the included generator.
