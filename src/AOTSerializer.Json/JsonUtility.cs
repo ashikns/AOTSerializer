@@ -671,7 +671,7 @@ namespace AOTSerializer.Json
             var buffer = new byte[StringEncoding.UTF8.GetMaxByteCount(propertyName.Length) + 2];
             int offset = 0;
             WriteString(ref buffer, ref offset, propertyName); // "propname"
-            return new ArraySegment<byte>(buffer, 1, offset - 1); // without quotation
+            return new ArraySegment<byte>(buffer, 1, offset - 2); // without quotation
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
