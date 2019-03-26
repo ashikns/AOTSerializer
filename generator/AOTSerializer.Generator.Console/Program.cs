@@ -1,5 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace AOTSerializer.Generator.Console
 {
@@ -8,22 +11,28 @@ namespace AOTSerializer.Generator.Console
         private static void Main(string[] args)
         {
             var name = "MSGraph";
+            var graphSourceDir = @"C:\Users\Ashik\Desktop\msgraph-sdk-dotnet\";
+
+            var responseModels = Directory.GetFiles(
+                $@"{graphSourceDir}src\Microsoft.Graph\Requests\Generated",
+                "*Response*");
 
             var compilation = RoslynExtensions.GetCompilation(
-               @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\Microsoft.Graph.sln",
+                $@"{graphSourceDir}Microsoft.Graph.sln",
                new string[] {
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Exceptions\Error.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Exceptions\ErrorResponse.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models\AsyncOperationStatus.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models\Date.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models\Duration.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models\ReferenceRequestBody.cs",
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models\TimeOfDay.cs",
-               },
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Exceptions\Error.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Exceptions\ErrorResponse.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Models\AsyncOperationStatus.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Models\Date.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Models\Duration.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Models\ReferenceRequestBody.cs",
+                   $@"{graphSourceDir}src\Microsoft.Graph.Core\Models\TimeOfDay.cs",
+               }
+                   .Concat(responseModels),
                new string[] {
-                   @"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph\Models\Generated",
-                   //@"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph\Requests\Generated",
-                   //@"C:\Users\asalim\Desktop\msgraph-sdk-dotnet\src\Microsoft.Graph.Core\Models",
+                   $@"{graphSourceDir}src\Microsoft.Graph\Models\Generated",
+                   //$@"{graphSourceDir}src\Microsoft.Graph\Requests\Generated",
+                   //$@"{graphSourceDir}src\Microsoft.Graph.Core\Models",
                },
                null,
                (project, index, count) => { System.Console.WriteLine($"Compiled {project} - {index} of {count}"); }
@@ -33,16 +42,17 @@ namespace AOTSerializer.Generator.Console
 
 
             // var name = "HoloBeam";
+            // var hbSourceDir = @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\"
 
             // var compilation = RoslynExtensions.GetCompilation(
-            //     @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\HoloBeam.sln",
+            //     $@"{hbSourceDir}HoloBeam.sln",
             //     new string[] {
-            //         @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\Assets\_HoloBeam\DataTypes\AuthenticatedKey.cs",
-            //         @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\Assets\_HoloBeam\DataTypes\IdentityDescription.cs",
-            //         @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\Assets\_HoloBeam\DataTypes\ViewerStatus.cs"
+            //         $@"{hbSourceDir}Assets\_HoloBeam\DataTypes\AuthenticatedKey.cs",
+            //         $@"{hbSourceDir}Assets\_HoloBeam\DataTypes\IdentityDescription.cs",
+            //         $@"{hbSourceDir}Assets\_HoloBeam\DataTypes\ViewerStatus.cs"
             //     },
             //     new string[] {
-            //         @"C:\GitRepo\HoloBeam_Rearch\HoloBeam\Assets\_HoloBeam\DataModels\_Contracts",
+            //         $@"{hbSourceDir}Assets\_HoloBeam\DataModels\_Contracts",
             //     },
             //     new string[] {
             //         @"C:\Program Files\Unity\Hub\Editor\2018.3.7f1\Editor\Data\Managed"
