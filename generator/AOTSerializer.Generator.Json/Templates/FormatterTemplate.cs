@@ -254,23 +254,36 @@ namespace AOTSerializer.Generator.Json.Templates
             
             #line default
             #line hidden
-            this.Write(");\r\n            var __");
+            this.Write(");\r\n");
             
             #line 78 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ if(x.IsWritable) { 
+            
+            #line default
+            #line hidden
+            this.Write("            var __");
+            
+            #line 79 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write("__b__ = false;\r\n");
             
-            #line 79 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 80 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 81 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 81 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 83 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  if (objInfo.Members.FirstOrDefault(m => m.IsExtensionData) is var extensionMember && extensionMember != null) { 
             
             #line default
@@ -278,14 +291,14 @@ namespace AOTSerializer.Generator.Json.Templates
             this.Write("            var __additionalDataDict__ = new System.Collections.Generic.Dictionar" +
                     "y<");
             
-            #line 82 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 84 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(extensionMember.TypeArguments));
             
             #line default
             #line hidden
             this.Write(">();\r\n\r\n");
             
-            #line 84 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 86 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
@@ -294,7 +307,7 @@ namespace AOTSerializer.Generator.Json.Templates
                     "    if (JsonUtility.ReadIsEndObject(bytes, ref offset))\r\n            {\r\n        " +
                     "        return new ");
             
-            #line 88 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 90 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(objInfo.GetConstructorString()));
             
             #line default
@@ -310,48 +323,62 @@ namespace AOTSerializer.Generator.Json.Templates
                 {
 ");
             
-            #line 97 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 99 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  index =0; foreach(var x in objInfo.Members) { 
             
             #line default
             #line hidden
             this.Write("                    case ");
             
-            #line 98 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 100 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index++));
             
             #line default
             #line hidden
             this.Write(":\r\n                        __");
             
-            #line 99 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 101 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write("__ = ");
             
-            #line 99 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 101 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.DeserializeMethodString));
             
             #line default
             #line hidden
-            this.Write(";\r\n                        __");
+            this.Write(";\r\n");
             
-            #line 100 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 102 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ if(x.IsWritable) { 
+            
+            #line default
+            #line hidden
+            this.Write("                        __");
+            
+            #line 103 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
-            this.Write("__b__ = true;\r\n                        break;\r\n");
+            this.Write("__b__ = true;\r\n");
             
-            #line 102 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 104 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                        break;\r\n");
+            
+            #line 106 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 103 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 107 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  if (extensionMember == null) { 
             
             #line default
@@ -359,7 +386,7 @@ namespace AOTSerializer.Generator.Json.Templates
             this.Write("                    default:\r\n                        JsonUtility.ReadNextBlock(b" +
                     "ytes, ref offset);\r\n                        break;\r\n");
             
-            #line 107 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 111 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } else { 
             
             #line default
@@ -373,7 +400,7 @@ namespace AOTSerializer.Generator.Json.Templates
                         break;
 ");
             
-            #line 115 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 119 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
@@ -392,48 +419,62 @@ namespace AOTSerializer.Generator.Json.Templates
                 {
 ");
             
-            #line 128 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 132 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  index =0; foreach(var x in objInfo.Members) { 
             
             #line default
             #line hidden
             this.Write("                    case ");
             
-            #line 129 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 133 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(index++));
             
             #line default
             #line hidden
             this.Write(":\r\n                        __");
             
-            #line 130 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 134 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write("__ = ");
             
-            #line 130 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 134 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.DeserializeMethodString));
             
             #line default
             #line hidden
-            this.Write(";\r\n                        __");
+            this.Write(";\r\n");
             
-            #line 131 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 135 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ if(x.IsWritable) { 
+            
+            #line default
+            #line hidden
+            this.Write("                        __");
+            
+            #line 136 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
-            this.Write("__b__ = true;\r\n                        break;\r\n");
+            this.Write("__b__ = true;\r\n");
             
-            #line 133 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 137 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                        break;\r\n");
+            
+            #line 139 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 134 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 140 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  if (extensionMember == null) { 
             
             #line default
@@ -441,7 +482,7 @@ namespace AOTSerializer.Generator.Json.Templates
             this.Write("                    default:\r\n                        JsonUtility.ReadNextBlock(b" +
                     "ytes, ref offset);\r\n                        break;\r\n");
             
-            #line 138 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 144 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } else { 
             
             #line default
@@ -455,91 +496,91 @@ namespace AOTSerializer.Generator.Json.Templates
                         break;
 ");
             
-            #line 146 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 152 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                }\r\n            }\r\n\r\n            var ____result = new ");
             
-            #line 150 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 156 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(objInfo.GetConstructorString()));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 151 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 157 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  foreach(var x in objInfo.Members.Where(x => x.IsWritable)) { 
             
             #line default
             #line hidden
             this.Write("            if (__");
             
-            #line 152 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 158 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write("__b__) ____result.");
             
-            #line 152 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 158 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write(" = __");
             
-            #line 152 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 158 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(x.Name));
             
             #line default
             #line hidden
             this.Write("__;\r\n");
             
-            #line 153 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 159 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 155 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 161 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  if (extensionMember != null) { 
             
             #line default
             #line hidden
             this.Write("            if(!__");
             
-            #line 156 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 162 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(extensionMember.Name));
             
             #line default
             #line hidden
             this.Write("__b__) ____result.");
             
-            #line 156 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 162 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(extensionMember.Name));
             
             #line default
             #line hidden
             this.Write("  = __additionalDataDict__;\r\n            \r\n");
             
-            #line 158 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 164 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("            return ____result;\r\n");
             
-            #line 160 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 166 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("        }\r\n    }\r\n\r\n");
             
-            #line 164 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
+            #line 170 "C:\GitRepo\HoloBeam_Rearch\Submodules\AOTSerializer\generator\AOTSerializer.Generator.Json\Templates\FormatterTemplate.tt"
  } 
             
             #line default

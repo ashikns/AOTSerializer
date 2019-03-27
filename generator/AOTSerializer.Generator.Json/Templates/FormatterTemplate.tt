@@ -75,7 +75,9 @@ namespace <#= Namespace #>
 
 <# foreach(var x in objInfo.Members) { #>
             var __<#= x.Name #>__ = default(<#= x.FullTypeName #>);
+<# if(x.IsWritable) { #>
             var __<#= x.Name #>__b__ = false;
+<# } #>
 <# } #>
 
 <# if (objInfo.Members.FirstOrDefault(m => m.IsExtensionData) is var extensionMember && extensionMember != null) { #>
@@ -97,7 +99,9 @@ namespace <#= Namespace #>
 <# index =0; foreach(var x in objInfo.Members) { #>
                     case <#= index++ #>:
                         __<#= x.Name #>__ = <#= x.DeserializeMethodString #>;
+<# if(x.IsWritable) { #>
                         __<#= x.Name #>__b__ = true;
+<# } #>
                         break;
 <# } #>
 <# if (extensionMember == null) { #>
@@ -128,7 +132,9 @@ namespace <#= Namespace #>
 <# index =0; foreach(var x in objInfo.Members) { #>
                     case <#= index++ #>:
                         __<#= x.Name #>__ = <#= x.DeserializeMethodString #>;
+<# if(x.IsWritable) { #>
                         __<#= x.Name #>__b__ = true;
+<# } #>
                         break;
 <# } #>
 <# if (extensionMember == null) { #>
