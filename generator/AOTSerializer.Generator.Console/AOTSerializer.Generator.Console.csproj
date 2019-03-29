@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\..\HoloBeam\Assets\_HoloBeam\DataModels\_Contracts\IceServer.cs" Link="IceServer.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AOTSerializer.Generator.Json\AOTSerializer.Generator.Json.csproj" />
-    <ProjectReference Include="..\AOTSerializer.Generator.MessagePack\AOTSerializer.Generator.MessagePack.csproj" />
     <ProjectReference Include="..\AOTSerializer.Generator\AOTSerializer.Generator.csproj" />
   </ItemGroup>
 
