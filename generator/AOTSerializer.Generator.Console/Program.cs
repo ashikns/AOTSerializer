@@ -16,7 +16,7 @@ namespace AOTSerializer.Generator.Console
         {
             string data;
 
-            using (var sharedMemory = MemoryMappedFile.OpenExisting("JsonGeneratorSharedMemory"))
+            using (var sharedMemory = MemoryMappedFile.OpenExisting(GeneratorIPCConstants.SharedMemoryName))
             {
                 using (var stream = sharedMemory.CreateViewStream())
                 {
