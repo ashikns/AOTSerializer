@@ -223,16 +223,14 @@ namespace AOTSerializer.Generator
         public static AttributeData FindAttribute(this IEnumerable<AttributeData> attributeDataList, string typeName)
         {
             return attributeDataList
-                .Where(x => x.AttributeClass.ToDisplayString() == typeName)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.AttributeClass.ToDisplayString() == typeName);
         }
 
         public static AttributeData FindAttributeShortName(this IEnumerable<AttributeData> attributeDataList,
             string typeName)
         {
             return attributeDataList
-                .Where(x => x.AttributeClass.Name == typeName)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.AttributeClass.Name.Contains(typeName));
         }
 
         public static AttributeData FindAttributeIncludeBasePropertyShortName(this IPropertySymbol property,
