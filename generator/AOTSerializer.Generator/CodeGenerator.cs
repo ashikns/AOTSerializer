@@ -230,9 +230,9 @@ namespace AOTSerializer.Generator
             {
                 if (item.IsIndexer) { continue; }
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
-                if (item.Type == type) { continue; }
+                if (item.Type.Equals(type)) { continue; }
 
-                var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
+                var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass.Equals(TypeReferences.DataMemberAttribute));
                 var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
                 var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
 
@@ -292,9 +292,9 @@ namespace AOTSerializer.Generator
             {
                 if (item.IsImplicitlyDeclared) continue;
                 if (item.GetAttributes().Any(x => x.AttributeClass == TypeReferences.IgnoreDataMemberAttribute)) { continue; }
-                if (item.Type == type) { continue; }
+                if (item.Type.Equals(type)) { continue; }
 
-                var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass == TypeReferences.DataMemberAttribute);
+                var dataMemberAttrib = item.GetAttributes().FirstOrDefault(a => a.AttributeClass.Equals(TypeReferences.DataMemberAttribute));
                 var jsonPropertyAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonProperty);
                 var jsonExtensionAttrib = item.GetAttributes().FindAttributeShortName(TypeReferences.JsonExtensionData);
 
